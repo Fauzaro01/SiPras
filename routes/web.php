@@ -5,10 +5,13 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AspirationController;
 
-// Redirect root to login
+// Landing Page
 Route::get('/', function () {
-    return redirect('/login');
-});
+    if (auth()->check()) {
+        return redirect()->route('dashboard');
+    }
+    return view('landing');
+})->name('home');
 
 // Authentication Routes
 Route::middleware('guest')->group(function () {

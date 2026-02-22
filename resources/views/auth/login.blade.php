@@ -9,7 +9,6 @@
         <div class="text-center mb-8">
             <h2 class="text-4xl font-bold text-blue-600 mb-2">SiPras</h2>
             <p class="text-gray-600">Sistem Prasarana Sekolah</p>
-            <p class="text-sm text-gray-500 mt-2">Masukkan Username (Admin) atau NIS (Siswa)</p>
         </div>
 
         <!-- Login Card -->
