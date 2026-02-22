@@ -15,19 +15,19 @@ class DashboardController extends Controller
         if ($user->isAdmin()) {
             $stats = [
                 'total_aspirasi' => Aspiration::count(),
-                'pending' => Aspiration::where('status', 'pending')->count(),
                 'diproses' => Aspiration::where('status', 'diproses')->count(),
                 'selesai' => Aspiration::where('status', 'selesai')->count(),
+                'ditolak' => Aspiration::where('status', 'ditolak')->count(),
             ];
-            $recent_aspirations = Aspiration::with('user')->latest()->take(5)->get();
+            $recent_aspirations = Aspiration::with(['user', 'category'])->latest()->take(5)->get();
         } else {
             $stats = [
                 'total_aspirasi' => $user->aspirations()->count(),
-                'pending' => $user->aspirations()->where('status', 'pending')->count(),
                 'diproses' => $user->aspirations()->where('status', 'diproses')->count(),
                 'selesai' => $user->aspirations()->where('status', 'selesai')->count(),
+                'ditolak' => $user->aspirations()->where('status', 'ditolak')->count(),
             ];
-            $recent_aspirations = $user->aspirations()->latest()->take(5)->get();
+            $recent_aspirations = $user->aspirations()->with('category')->latest()->take(5)->get();
         }
 
         return view('dashboard', compact('stats', 'recent_aspirations'));

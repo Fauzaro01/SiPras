@@ -14,11 +14,11 @@ return new class extends Migration
         Schema::create('aspirations', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('category_id')->constrained()->onDelete('cascade');
             $table->string('judul');
             $table->text('deskripsi');
-            $table->string('kategori'); // misal: ruang kelas, toilet, laboratorium, dll
             $table->string('lokasi');
-            $table->enum('status', ['pending', 'diproses', 'selesai', 'ditolak'])->default('pending');
+            $table->enum('status', ['diproses', 'selesai', 'ditolak'])->default('diproses');
             $table->text('tanggapan_admin')->nullable();
             $table->timestamps();
         });

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Aspiration;
+use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -11,9 +12,9 @@ class AspirationController extends Controller
     public function index()
     {
         if (Auth::user()->isAdmin()) {
-            $aspirations = Aspiration::with('user')->latest()->paginate(10);
+            $aspirations = Aspiration::with(['user', 'category'])->latest()->get();
         } else {
-            $aspirations = Auth::user()->aspirations()->latest()->paginate(10);
+            $aspirations = Auth::user()->aspirations()->with('category')->latest()->get();
         }
         
         return view('aspirations.index', compact('aspirations'));
@@ -21,7 +22,8 @@ class AspirationController extends Controller
 
     public function create()
     {
-        return view('aspirations.create');
+        $categories = Category::orderBy('nama')->get();
+        return view('aspirations.create', compact('categories'));
     }
 
     public function store(Request $request)
@@ -29,7 +31,7 @@ class AspirationController extends Controller
         $validated = $request->validate([
             'judul' => 'required|string|max:255',
             'deskripsi' => 'required|string',
-            'kategori' => 'required|string',
+            'category_id' => 'required|exists:categories,id',
             'lokasi' => 'required|string|max:255',
         ]);
 
@@ -43,23 +45,22 @@ class AspirationController extends Controller
 
     public function show(Aspiration $aspiration)
     {
-        // Pastikan siswa hanya bisa lihat aspirasinya sendiri
         if (Auth::user()->isSiswa() && $aspiration->user_id !== Auth::id()) {
             abort(403);
         }
 
+        $aspiration->load(['user', 'category']);
         return view('aspirations.show', compact('aspiration'));
     }
 
     public function updateStatus(Request $request, Aspiration $aspiration)
     {
-        // Hanya admin yang bisa update status
         if (!Auth::user()->isAdmin()) {
             abort(403);
         }
 
         $validated = $request->validate([
-            'status' => 'required|in:pending,diproses,selesai,ditolak',
+            'status' => 'required|in:diproses,selesai,ditolak',
             'tanggapan_admin' => 'nullable|string',
         ]);
 
@@ -71,7 +72,6 @@ class AspirationController extends Controller
 
     public function destroy(Aspiration $aspiration)
     {
-        // Siswa hanya bisa hapus aspirasinya sendiri
         if (Auth::user()->isSiswa() && $aspiration->user_id !== Auth::id()) {
             abort(403);
         }
