@@ -5,72 +5,170 @@
 
 @push('styles')
 <style>
+    /* ── Length select ── */
+    .dataTables_wrapper .dataTables_length label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.85rem;
+        color: #6b7280;
+    }
     .dataTables_wrapper .dataTables_length select {
-        padding: 0.4rem 2rem 0.4rem 0.75rem;
-        border: 1px solid #d1d5db;
-        border-radius: 0.5rem;
-        font-size: 0.875rem;
-        background-color: white;
+        padding: 8px 32px 8px 12px;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        font-size: 0.85rem;
+        background-color: #fff;
+        color: #374151;
+        cursor: pointer;
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236b7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 8px center;
+        background-size: 14px;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .dataTables_wrapper .dataTables_length select:focus {
+        outline: none;
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59,130,246,.12);
+    }
+
+    /* ── Search ── */
+    .dt-search-wrap {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+    }
+    .dt-search-icon {
+        position: absolute;
+        left: 11px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #9ca3af;
+        pointer-events: none;
+        width: 16px;
+        height: 16px;
+        flex-shrink: 0;
+    }
+    .dataTables_wrapper .dataTables_filter label {
+        font-size: 0;
     }
     .dataTables_wrapper .dataTables_filter input {
-        padding: 0.5rem 1rem;
-        border: 1px solid #d1d5db;
-        border-radius: 0.5rem;
-        font-size: 0.875rem;
+        padding: 9px 14px 9px 36px !important;
+        border: 1px solid #e5e7eb;
+        border-radius: 10px;
+        font-size: 0.85rem !important;
         outline: none;
-        transition: all 0.2s;
+        transition: border-color 0.2s, box-shadow 0.2s, width 0.25s;
+        width: 220px;
+        background: #f9fafb;
+        color: #374151;
+        display: block;
     }
     .dataTables_wrapper .dataTables_filter input:focus {
         border-color: #3b82f6;
-        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        box-shadow: 0 0 0 3px rgba(59,130,246,.12);
+        background: #fff;
+        width: 260px;
+    }
+    .dataTables_wrapper .dataTables_filter input::placeholder {
+        color: #9ca3af;
+    }
+
+    /* ── Table ── */
+    table.dataTable thead th {
+        border-bottom: 2px solid #e5e7eb !important;
+        padding: 12px 12px !important;
+        font-size: 0.7rem;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+        color: #6b7280;
+        text-transform: uppercase;
+        white-space: nowrap;
+    }
+    table.dataTable thead th.sorting::after,
+    table.dataTable thead th.sorting_asc::after,
+    table.dataTable thead th.sorting_desc::after {
+        opacity: 0.5;
+    }
+    table.dataTable tbody td {
+        border-bottom: 1px solid #f3f4f6 !important;
+        padding: 13px 12px !important;
+        vertical-align: middle;
+    }
+    table.dataTable tbody tr:last-child td {
+        border-bottom: none !important;
+    }
+    table.dataTable tbody tr:hover td {
+        background-color: #f8faff !important;
+    }
+    table.dataTable.no-footer {
+        border-bottom: none !important;
+    }
+
+    /* ── Pagination ── */
+    .dataTables_wrapper .dataTables_paginate {
+        padding-top: 4px;
     }
     .dataTables_wrapper .dataTables_paginate .paginate_button {
-        padding: 0.4rem 0.85rem;
-        margin: 0 0.15rem;
-        border-radius: 0.5rem;
-        font-size: 0.875rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 34px;
+        padding: 6px 10px !important;
+        margin: 0 2px !important;
+        border-radius: 8px !important;
+        font-size: 0.8rem !important;
         border: 1px solid #e5e7eb !important;
-        background: white !important;
+        background: #fff !important;
         color: #374151 !important;
         cursor: pointer;
         transition: all 0.15s;
+        line-height: 1.25;
     }
-    .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+    .dataTables_wrapper .dataTables_paginate .paginate_button:hover:not(.disabled):not(.current) {
         background: #eff6ff !important;
         border-color: #bfdbfe !important;
         color: #2563eb !important;
     }
     .dataTables_wrapper .dataTables_paginate .paginate_button.current {
-        background: #2563eb !important;
+        background: linear-gradient(135deg,#3b82f6,#2563eb) !important;
         border-color: #2563eb !important;
-        color: white !important;
+        color: #fff !important;
+        font-weight: 600 !important;
+        box-shadow: 0 2px 6px rgba(37,99,235,.3) !important;
     }
-    .dataTables_wrapper .dataTables_paginate .paginate_button.disabled {
-        opacity: 0.4;
-        cursor: default;
+    .dataTables_wrapper .dataTables_paginate .paginate_button.disabled,
+    .dataTables_wrapper .dataTables_paginate .paginate_button.disabled:hover {
+        opacity: 0.35 !important;
+        cursor: default !important;
+        background: #fff !important;
+        border-color: #e5e7eb !important;
+        color: #9ca3af !important;
     }
+
+    /* ── Info ── */
     .dataTables_wrapper .dataTables_info {
-        font-size: 0.8rem;
-        color: #6b7280;
-        padding-top: 0.75rem;
+        font-size: 0.78rem;
+        color: #9ca3af;
+        padding-top: 10px;
     }
-    table.dataTable thead th {
-        border-bottom: 2px solid #e5e7eb !important;
+
+    /* ── Empty state ── */
+    .dataTables_empty {
+        padding: 0 !important;
+        background: none !important;
     }
-    table.dataTable tbody td {
-        border-bottom: 1px solid #f3f4f6 !important;
-    }
-    table.dataTable tbody tr:hover {
-        background-color: #f9fafb !important;
-    }
-    table.dataTable.no-footer {
-        border-bottom: none !important;
-    }
+
+    /* ── Responsive hiding ── */
     @media (max-width: 640px) {
-        .dt-col-hide-sm { display: none; }
+        .dt-col-hide-sm { display: none !important; }
+        .dataTables_wrapper .dataTables_filter input { width: 160px; }
+        .dataTables_wrapper .dataTables_filter input:focus { width: 180px; }
     }
     @media (max-width: 768px) {
-        .dt-col-hide-md { display: none; }
+        .dt-col-hide-md { display: none !important; }
     }
 </style>
 @endpush
@@ -177,29 +275,43 @@
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
 <script>
+    const emptyStateHTML = (icon, color, title, subtitle) => `
+        <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:3.5rem 1.5rem;">
+            <div style="width:64px;height:64px;border-radius:9999px;background:${color};display:flex;align-items:center;justify-content:center;margin-bottom:1rem;">
+                ${icon}
+            </div>
+            <p style="color:#1f2937;font-weight:600;font-size:0.9375rem;margin:0;">${title}</p>
+            <p style="color:#9ca3af;font-size:0.8125rem;margin:0.35rem 0 0;">${subtitle}</p>
+        </div>
+    `;
+
+    const searchIcon = `<svg style="width:28px;height:28px;" fill="none" stroke="#60a5fa" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>`;
+    const docIcon   = `<svg style="width:28px;height:28px;" fill="none" stroke="#d1d5db" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>`;
+
     $(document).ready(function() {
         if ($('#aspirationsTable').length) {
             $('#aspirationsTable').DataTable({
-                responsive: true,
                 pageLength: 10,
                 lengthMenu: [5, 10, 25, 50],
                 order: [[{{ Auth::user()->isAdmin() ? '4' : '3' }}, 'desc']],
                 language: {
-                    search: "",
-                    searchPlaceholder: "Cari aspirasi...",
-                    lengthMenu: "Tampilkan _MENU_ data",
-                    info: "Menampilkan _START_ - _END_ dari _TOTAL_ data",
-                    infoEmpty: "Tidak ada data",
-                    infoFiltered: "(disaring dari _MAX_ data)",
-                    paginate: {
-                        first: "«",
-                        last: "»",
-                        next: "›",
-                        previous: "‹"
-                    },
-                    zeroRecords: "Tidak ada data yang cocok",
+                    search: '',
+                    lengthMenu: '_MENU_ per halaman',
+                    info: 'Menampilkan _START_–_END_ dari _TOTAL_ data',
+                    infoEmpty: 'Tidak ada data tersedia',
+                    infoFiltered: '(disaring dari _MAX_ data)',
+                    paginate: { first: '«', last: '»', next: '›', previous: '‹' },
+                    zeroRecords: emptyStateHTML(searchIcon, '#eff6ff', 'Tidak ada hasil ditemukan', 'Coba gunakan kata kunci yang berbeda'),
+                    emptyTable:  emptyStateHTML(docIcon,    '#f9fafb', 'Belum ada aspirasi', 'Data aspirasi akan muncul di sini'),
                 },
-                dom: '<"flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4"lf>rtip',
+                dom: '<"flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-5"lf>rtip',
+                initComplete: function() {
+                    // Inject search icon before the input
+                    const $input = $('.dataTables_filter input');
+                    $input.wrap('<div class="dt-search-wrap"></div>');
+                    $input.before(`<svg class="dt-search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>`);
+                    $input.attr('placeholder', 'Cari aspirasi...');
+                }
             });
         }
     });
