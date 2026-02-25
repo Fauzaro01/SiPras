@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AspirationController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\UserController;
 
 // Landing Page
 Route::get('/', function () {
@@ -30,7 +31,11 @@ Route::middleware('auth')->group(function () {
     Route::resource('aspirations', AspirationController::class);
     Route::post('/aspirations/{aspiration}/update-status', [AspirationController::class, 'updateStatus'])
         ->name('aspirations.update-status');
+    Route::get('/histori', [AspirationController::class, 'histori'])->name('aspirations.histori');
 
     // Category Routes (Admin only)
     Route::resource('categories', CategoryController::class)->only(['index', 'store', 'update', 'destroy']);
+
+    // User Management Routes (Admin only)
+    Route::resource('users', UserController::class)->only(['index', 'update', 'destroy']);
 });

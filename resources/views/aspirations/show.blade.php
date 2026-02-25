@@ -35,6 +35,33 @@
 
         <!-- Content -->
         <div class="p-5 sm:p-6 space-y-6">
+            <!-- Bukti Foto -->
+            @if($aspiration->bukti_foto)
+                <div class="flex items-center justify-between bg-blue-50 border border-blue-100 rounded-lg px-4 py-3">
+                    <div class="flex items-center gap-3">
+                        <div class="w-9 h-9 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="text-sm font-semibold text-blue-800">Bukti Foto Tersedia</p>
+                            <p class="text-xs text-blue-500">Klik tombol untuk melihat foto bukti aspirasi</p>
+                        </div>
+                    </div>
+                    <button
+                        onclick="openLightbox('{{ asset('storage/' . $aspiration->bukti_foto) }}')"
+                        class="flex-shrink-0 inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold px-4 py-2 rounded-lg transition shadow-sm"
+                    >
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                        </svg>
+                        Lihat Foto
+                    </button>
+                </div>
+            @endif
+
             <!-- Informasi Pelapor (untuk admin) -->
             @if(Auth::user()->isAdmin())
                 <div class="bg-gray-50 rounded-lg p-4">
@@ -176,4 +203,34 @@
         </div>
     </div>
 </div>
+
+{{-- Lightbox Modal --}}
+<div id="lightbox" onclick="closeLightbox()" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div onclick="event.stopPropagation()" class="relative max-w-4xl w-full">
+        <button onclick="closeLightbox()" class="absolute -top-10 right-0 text-white/80 hover:text-white transition">
+            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+        </button>
+        <img id="lightbox-img" src="" alt="Bukti Foto" class="w-full max-h-[80vh] object-contain rounded-xl shadow-2xl">
+        <p class="text-center text-xs text-white/60 mt-3">Klik di luar gambar untuk menutup</p>
+    </div>
+</div>
+
+@push('scripts')
+<script>
+    function openLightbox(src) {
+        document.getElementById('lightbox-img').src = src;
+        document.getElementById('lightbox').classList.remove('hidden');
+        document.getElementById('lightbox').classList.add('flex');
+        document.body.style.overflow = 'hidden';
+    }
+    function closeLightbox() {
+        document.getElementById('lightbox').classList.add('hidden');
+        document.getElementById('lightbox').classList.remove('flex');
+        document.body.style.overflow = '';
+    }
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+</script>
+@endpush
 @endsection

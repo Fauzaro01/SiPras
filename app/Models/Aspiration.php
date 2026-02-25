@@ -15,6 +15,7 @@ class Aspiration extends Model
         'judul',
         'deskripsi',
         'lokasi',
+        'bukti_foto',
         'status',
         'tanggapan_admin',
     ];
