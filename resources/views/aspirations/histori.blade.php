@@ -21,7 +21,7 @@
     table.dataTable.no-footer { border-bottom:none!important; }
     .dataTables_wrapper .dataTables_paginate .paginate_button { display:inline-flex;align-items:center;justify-content:center;min-width:34px;padding:6px 10px!important;margin:0 2px!important;border-radius:8px!important;font-size:.8rem!important;border:1px solid #e5e7eb!important;background:#fff!important;color:#374151!important;cursor:pointer;transition:all .15s; }
     .dataTables_wrapper .dataTables_paginate .paginate_button:hover:not(.disabled):not(.current) { background:#eff6ff!important;border-color:#bfdbfe!important;color:#2563eb!important; }
-    .dataTables_wrapper .dataTables_paginate .paginate_button.current { background:linear-gradient(135deg,#3b82f6,#2563eb)!important;border-color:#2563eb!important;color:#fff!important;font-weight:600!important;box-shadow:0 2px 6px rgba(37,99,235,.3)!important; }
+    .dataTables_wrapper .dataTables_paginate .paginate_button.current { background:#2563eb!important;border-color:#2563eb!important;color:#fff!important;font-weight:600!important;box-shadow:0 2px 6px rgba(37,99,235,.25)!important; }
     .dataTables_wrapper .dataTables_paginate .paginate_button.disabled,
     .dataTables_wrapper .dataTables_paginate .paginate_button.disabled:hover { opacity:.35!important;cursor:default!important;background:#fff!important;border-color:#e5e7eb!important;color:#9ca3af!important; }
     .dataTables_wrapper .dataTables_info { font-size:.78rem;color:#9ca3af;padding-top:10px; }
@@ -38,7 +38,13 @@
     <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <div>
             <h1 class="text-xl sm:text-2xl font-bold text-gray-800">Histori Aspirasi</h1>
-            <p class="text-gray-500 text-sm mt-1">Aspirasi Anda yang telah selesai diproses atau ditolak</p>
+            <p class="text-gray-500 text-sm mt-1">
+                @if(Auth::user()->isAdmin())
+                    Semua aspirasi yang telah selesai diproses atau ditolak
+                @else
+                    Aspirasi Anda yang telah selesai diproses atau ditolak
+                @endif
+            </p>
         </div>
         <a href="{{ route('aspirations.index') }}" class="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium text-sm transition self-start">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -78,6 +84,9 @@
                     <thead>
                         <tr>
                             <th class="text-left px-3 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Judul & Kategori</th>
+                            @if(Auth::user()->isAdmin())
+                                <th class="text-left px-3 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider dt-col-hide-md">Pelapor</th>
+                            @endif
                             <th class="text-left px-3 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider dt-col-hide-sm">Lokasi</th>
                             <th class="text-left px-3 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Status</th>
                             <th class="text-left px-3 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider dt-col-hide-md">Feedback</th>
@@ -92,6 +101,12 @@
                                     <div class="font-medium text-gray-800">{{ $aspiration->judul }}</div>
                                     <div class="text-xs text-gray-400 mt-0.5">{{ $aspiration->category->nama ?? '-' }}</div>
                                 </td>
+                                @if(Auth::user()->isAdmin())
+                                    <td class="px-3 py-3.5 dt-col-hide-md">
+                                        <div class="text-gray-800">{{ $aspiration->user->name }}</div>
+                                        <div class="text-xs text-gray-400">{{ $aspiration->user->nis ?? '-' }}</div>
+                                    </td>
+                                @endif
                                 <td class="px-3 py-3.5 text-gray-600 dt-col-hide-sm">{{ $aspiration->lokasi }}</td>
                                 <td class="px-3 py-3.5">
                                     <span class="inline-flex px-2.5 py-0.5 rounded-full text-xs font-semibold {{ $aspiration->status_color }}">
@@ -101,7 +116,7 @@
                                 <td class="px-3 py-3.5 dt-col-hide-md">
                                     @php $feedbackCount = $aspiration->feedbacks->count(); @endphp
                                     @if($feedbackCount > 0)
-                                        <span class="inline-flex items-center gap-1 text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded-full text-xs font-semibold">
+                                        <span class="inline-flex items-center gap-1 text-blue-700 bg-blue-50 px-2 py-0.5 rounded-full text-xs font-semibold">
                                             <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7z" clip-rule="evenodd"/></svg>
                                             {{ $feedbackCount }}
                                         </span>
@@ -136,7 +151,7 @@
                 <p class="text-gray-600 font-semibold">Belum ada histori aspirasi</p>
                 <p class="text-gray-400 text-sm mt-1">Aspirasi yang sudah selesai atau ditolak akan muncul di sini</p>
                 <a href="{{ route('aspirations.index') }}" class="mt-5 inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg text-sm font-semibold transition">
-                    Lihat Aspirasi Aktif
+                    @if(Auth::user()->isAdmin()) Lihat Daftar Aspirasi @else Lihat Aspirasi Aktif @endif
                 </a>
             </div>
         @endif
@@ -152,7 +167,7 @@
         if ($('#historiTable').length) {
             $('#historiTable').DataTable({
                 pageLength: 10,
-                order: [[4, 'desc']],
+                order: [[{{ Auth::user()->isAdmin() ? '5' : '4' }}, 'desc']],
                 language: {
                     search: '',
                     lengthMenu: '_MENU_ per halaman',

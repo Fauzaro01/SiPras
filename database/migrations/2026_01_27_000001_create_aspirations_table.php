@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('judul');
             $table->text('deskripsi');
             $table->string('lokasi');
-            $table->enum('status', ['diproses', 'selesai', 'ditolak'])->default('diproses');
+            $table->enum('status', ['diajukan', 'diproses', 'selesai', 'ditolak'])->default('diajukan');
             $table->text('tanggapan_admin')->nullable();
             $table->timestamps();
         });

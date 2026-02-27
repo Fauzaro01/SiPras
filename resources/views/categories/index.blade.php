@@ -96,7 +96,7 @@
                                 <td class="px-6 py-4 text-center display-mode-{{ $category->id }}">
                                     <div class="flex justify-center gap-2">
                                         <button onclick="toggleEdit({{ $category->id }})" class="text-blue-600 hover:text-blue-800 text-xs font-medium transition">Edit</button>
-                                        <form method="POST" action="{{ route('categories.destroy', $category) }}" onsubmit="return confirm('Yakin ingin menghapus kategori \'{{ $category->nama }}\'?')">
+                                        <form method="POST" action="{{ route('categories.destroy', $category) }}" data-confirm="Yakin ingin menghapus kategori '{{ $category->nama }}'?">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="text-red-600 hover:text-red-800 text-xs font-medium transition">Hapus</button>
@@ -144,7 +144,7 @@
                             </div>
                             <div class="flex gap-3 mt-3">
                                 <button onclick="toggleEditCard({{ $category->id }})" class="text-blue-600 hover:text-blue-800 text-xs font-medium">Edit</button>
-                                <form method="POST" action="{{ route('categories.destroy', $category) }}" onsubmit="return confirm('Yakin ingin menghapus kategori \'{{ $category->nama }}\'?')">
+                                <form method="POST" action="{{ route('categories.destroy', $category) }}" data-confirm="Yakin ingin menghapus kategori '{{ $category->nama }}'?">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="text-red-600 hover:text-red-800 text-xs font-medium">Hapus</button>

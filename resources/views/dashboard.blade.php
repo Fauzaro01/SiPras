@@ -6,7 +6,7 @@
 @section('content')
 <div class="space-y-6">
     <!-- Welcome Header -->
-    <div class="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl shadow-lg p-5 sm:p-6 text-white">
+    <div class="bg-blue-600 rounded-xl shadow-sm p-5 sm:p-6 text-white">
         <h1 class="text-2xl sm:text-3xl font-bold mb-2">Selamat Datang, {{ Auth::user()->name }}!</h1>
         <p class="text-blue-100 text-sm sm:text-base">
             @if(Auth::user()->isAdmin())

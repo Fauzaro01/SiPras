@@ -13,7 +13,11 @@ class AspirationController extends Controller
     public function index()
     {
         if (Auth::user()->isAdmin()) {
-            $aspirations = Aspiration::with(['user', 'category'])->latest()->get();
+            $aspirations = Aspiration::with(['user', 'category'])
+                ->whereIn('status', ['diajukan', 'diproses'])
+                ->orderByRaw("CASE WHEN status = 'diajukan' THEN 0 WHEN status = 'diproses' THEN 1 ELSE 2 END")
+                ->latest()
+                ->get();
         } else {
             $aspirations = Auth::user()->aspirations()->with('category')
                 ->whereNotIn('status', ['selesai', 'ditolak'])
@@ -25,13 +29,15 @@ class AspirationController extends Controller
 
     public function histori()
     {
-        if (!Auth::user()->isSiswa()) {
-            abort(403);
+        if (Auth::user()->isAdmin()) {
+            $aspirations = Aspiration::with(['user', 'category', 'feedbacks'])
+                ->whereIn('status', ['selesai', 'ditolak'])
+                ->latest()->get();
+        } else {
+            $aspirations = Auth::user()->aspirations()->with(['category', 'feedbacks'])
+                ->whereIn('status', ['selesai', 'ditolak'])
+                ->latest()->get();
         }
-
-        $aspirations = Auth::user()->aspirations()->with(['category', 'feedbacks'])
-            ->whereIn('status', ['selesai', 'ditolak'])
-            ->latest()->get();
 
         return view('aspirations.histori', compact('aspirations'));
     }

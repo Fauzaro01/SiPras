@@ -43,6 +43,10 @@ Route::middleware('auth')->group(function () {
     // Category Routes (Admin only)
     Route::resource('categories', CategoryController::class)->only(['index', 'store', 'update', 'destroy']);
 
+    // Password Change (all authenticated users)
+    Route::get('/profile/change-password', [AuthController::class, 'changePasswordForm'])->name('password.change');
+    Route::post('/profile/change-password', [AuthController::class, 'updatePassword'])->name('password.update');
+
     // User Management Routes (Admin only)
-    Route::resource('users', UserController::class)->only(['index', 'update', 'destroy']);
+    Route::resource('users', UserController::class)->only(['index', 'create', 'store', 'update', 'destroy']);
 });

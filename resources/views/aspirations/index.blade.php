@@ -133,11 +133,11 @@
         color: #2563eb !important;
     }
     .dataTables_wrapper .dataTables_paginate .paginate_button.current {
-        background: linear-gradient(135deg,#3b82f6,#2563eb) !important;
+        background: #2563eb !important;
         border-color: #2563eb !important;
         color: #fff !important;
         font-weight: 600 !important;
-        box-shadow: 0 2px 6px rgba(37,99,235,.3) !important;
+        box-shadow: 0 2px 6px rgba(37,99,235,.25) !important;
     }
     .dataTables_wrapper .dataTables_paginate .paginate_button.disabled,
     .dataTables_wrapper .dataTables_paginate .paginate_button.disabled:hover {
@@ -228,7 +228,7 @@
                                     </td>
                                 @endif
                                 <td class="px-3 py-3.5 text-gray-600 dt-col-hide-sm">{{ $aspiration->lokasi }}</td>
-                                <td class="px-3 py-3.5">
+                                <td class="px-3 py-3.5" @if(Auth::user()->isAdmin()) data-order="{{ $aspiration->status === 'diajukan' ? '0' : '1' }}" @endif>
                                     <span class="inline-flex px-2.5 py-0.5 rounded-full text-xs font-semibold {{ $aspiration->status_color }}">
                                         {{ $aspiration->status_label }}
                                     </span>
@@ -293,7 +293,7 @@
             $('#aspirationsTable').DataTable({
                 pageLength: 10,
                 lengthMenu: [5, 10, 25, 50],
-                order: [[{{ Auth::user()->isAdmin() ? '4' : '3' }}, 'desc']],
+                order: {{ Auth::user()->isAdmin() ? '[[3, "asc"], [4, "desc"]]' : '[[3, "desc"]]' }},
                 language: {
                     search: '',
                     lengthMenu: '_MENU_ per halaman',

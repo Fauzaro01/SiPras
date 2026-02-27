@@ -24,21 +24,37 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => fake()->name(),
-            'email' => fake()->unique()->safeEmail(),
-            'email_verified_at' => now(),
-            'password' => static::$password ??= Hash::make('password'),
+            'name'           => fake()->name(),
+            'role'           => 'siswa',
+            'nis'            => fake()->unique()->numerify('######'),
+            'kelas'          => fake()->randomElement(['X-1', 'X-2', 'X-3', 'XI-1', 'XI-2', 'XII-1']),
+            'password'       => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
         ];
     }
 
     /**
-     * Indicate that the model's email address should be unverified.
+     * State for admin users.
      */
-    public function unverified(): static
+    public function admin(): static
     {
         return $this->state(fn (array $attributes) => [
-            'email_verified_at' => null,
+            'role'     => 'admin',
+            'username' => fake()->unique()->userName(),
+            'nis'      => null,
+            'kelas'    => null,
+        ]);
+    }
+
+    /**
+     * State for siswa users.
+     */
+    public function siswa(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'role'  => 'siswa',
+            'nis'   => fake()->unique()->numerify('######'),
+            'kelas' => fake()->randomElement(['X-1', 'X-2', 'X-3', 'XI-1', 'XI-2', 'XII-1']),
         ]);
     }
 }

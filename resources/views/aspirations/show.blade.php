@@ -19,7 +19,7 @@
     {{-- ═══ Main Card ═══ --}}
     <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
         {{-- Header --}}
-        <div class="bg-gradient-to-r from-blue-600 to-indigo-600 p-5 sm:p-6 text-white">
+        <div class="bg-blue-600 p-5 sm:p-6 text-white">
             <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3">
                 <div class="flex-1">
                     <h1 class="text-xl sm:text-2xl font-bold">{{ $aspiration->judul }}</h1>
@@ -124,7 +124,7 @@
             @if(Auth::user()->isSiswa() && $aspiration->user_id === Auth::id() && $aspiration->status === 'diajukan')
                 <div class="border-t pt-5">
                     <form method="POST" action="{{ route('aspirations.destroy', $aspiration) }}"
-                        onsubmit="return confirm('Yakin ingin menghapus aspirasi ini?')">
+                        data-confirm="Yakin ingin menghapus aspirasi ini?">
                         @csrf
                         @method('DELETE')
                         <button type="submit"
@@ -141,14 +141,14 @@
     {{-- ═══ Feedback Timeline ═══ --}}
     <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
         <div class="px-5 sm:px-6 py-4 border-b border-gray-100 flex items-center gap-2">
-            <div class="w-7 h-7 rounded-lg bg-indigo-100 flex items-center justify-center">
-                <svg class="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="w-7 h-7 rounded-lg bg-blue-100 flex items-center justify-center">
+                <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/>
                 </svg>
             </div>
             <h3 class="font-semibold text-gray-800 text-sm">Feedback & Timeline</h3>
             @if($aspiration->feedbacks->count() > 0)
-                <span class="bg-indigo-100 text-indigo-700 text-xs font-bold px-2 py-0.5 rounded-full">
+                <span class="bg-blue-100 text-blue-700 text-xs font-bold px-2 py-0.5 rounded-full">
                     {{ $aspiration->feedbacks->count() }}
                 </span>
             @endif
@@ -179,8 +179,8 @@
                     {{-- Items: Setiap feedback --}}
                     @foreach($aspiration->feedbacks as $feedback)
                         <div class="relative flex items-start pb-6" id="feedback-{{ $feedback->id }}">
-                            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-indigo-100 border-2 border-white shadow-sm flex items-center justify-center z-10">
-                                <svg class="w-4 h-4 text-indigo-600" fill="currentColor" viewBox="0 0 20 20">
+                            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-blue-100 border-2 border-white shadow-sm flex items-center justify-center z-10">
+                                <svg class="w-4 h-4 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clip-rule="evenodd"/>
                                 </svg>
                             </div>
@@ -191,14 +191,14 @@
                                             <span class="font-semibold text-gray-700">{{ $feedback->user->name ?? 'Admin' }}</span>
                                             &middot; {{ $feedback->created_at->translatedFormat('d F Y, H:i') }}
                                         </p>
-                                        <div class="mt-2 bg-indigo-50 border border-indigo-100 rounded-lg px-4 py-3">
+                                        <div class="mt-2 bg-blue-50 border border-blue-100 rounded-lg px-4 py-3">
                                             <p class="text-sm text-gray-700 leading-relaxed whitespace-pre-line">{{ $feedback->pesan }}</p>
                                         </div>
                                     </div>
                                     @if(Auth::user()->isAdmin())
                                         <form method="POST"
                                             action="{{ route('feedbacks.destroy', [$aspiration, $feedback]) }}"
-                                            onsubmit="return confirm('Hapus feedback ini?')"
+                                            data-confirm="Hapus feedback ini?"
                                             class="flex-shrink-0 mt-0.5">
                                             @csrf
                                             @method('DELETE')
@@ -282,7 +282,7 @@
                         <textarea
                             name="pesan"
                             rows="3"
-                            class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 text-sm transition resize-none bg-gray-50 focus:bg-white"
+                            class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-400 text-sm transition resize-none bg-gray-50 focus:bg-white"
                             placeholder="Tulis feedback untuk aspirasi ini..."
                         >{{ old('pesan') }}</textarea>
                         @error('pesan')
@@ -290,7 +290,7 @@
                         @enderror
                         <div class="flex justify-end">
                             <button type="submit"
-                                class="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-lg font-semibold shadow-sm hover:shadow-md transition text-sm">
+                                class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-lg font-semibold shadow-sm hover:shadow-md transition text-sm">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
                                 </svg>

@@ -21,7 +21,7 @@
     table.dataTable.no-footer { border-bottom:none!important; }
     .dataTables_wrapper .dataTables_paginate .paginate_button { display:inline-flex;align-items:center;justify-content:center;min-width:34px;padding:6px 10px!important;margin:0 2px!important;border-radius:8px!important;font-size:.8rem!important;border:1px solid #e5e7eb!important;background:#fff!important;color:#374151!important;cursor:pointer;transition:all .15s; }
     .dataTables_wrapper .dataTables_paginate .paginate_button:hover:not(.disabled):not(.current) { background:#eff6ff!important;border-color:#bfdbfe!important;color:#2563eb!important; }
-    .dataTables_wrapper .dataTables_paginate .paginate_button.current { background:linear-gradient(135deg,#3b82f6,#2563eb)!important;border-color:#2563eb!important;color:#fff!important;font-weight:600!important;box-shadow:0 2px 6px rgba(37,99,235,.3)!important; }
+    .dataTables_wrapper .dataTables_paginate .paginate_button.current { background:#2563eb!important;border-color:#2563eb!important;color:#fff!important;font-weight:600!important;box-shadow:0 2px 6px rgba(37,99,235,.25)!important; }
     .dataTables_wrapper .dataTables_paginate .paginate_button.disabled,
     .dataTables_wrapper .dataTables_paginate .paginate_button.disabled:hover { opacity:.35!important;cursor:default!important;background:#fff!important;border-color:#e5e7eb!important;color:#9ca3af!important; }
     .dataTables_wrapper .dataTables_info { font-size:.78rem;color:#9ca3af;padding-top:10px; }
@@ -35,9 +35,17 @@
 <div class="space-y-6">
 
     <!-- Header -->
-    <div>
-        <h1 class="text-xl sm:text-2xl font-bold text-gray-800">Manajemen Pengguna</h1>
-        <p class="text-gray-500 text-sm mt-1">Kelola akun siswa yang terdaftar di SiPras</p>
+    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+        <div>
+            <h1 class="text-xl sm:text-2xl font-bold text-gray-800">Manajemen Pengguna</h1>
+            <p class="text-gray-500 text-sm mt-1">Kelola akun pengguna yang terdaftar di SiPras</p>
+        </div>
+        <a href="{{ route('users.create') }}" class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-lg font-semibold shadow-sm hover:shadow-md transition text-sm self-start">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+            </svg>
+            Tambah Pengguna
+        </a>
     </div>
 
     <!-- Stats -->
@@ -79,7 +87,6 @@
                     <tr>
                         <th class="text-left px-3 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Pengguna</th>
                         <th class="text-left px-3 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider dt-col-hide-sm">NIS / Kelas</th>
-                        <th class="text-left px-3 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider dt-col-hide-md">Email</th>
                         <th class="text-center px-3 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider dt-col-hide-sm">Aspirasi</th>
                         <th class="text-center px-3 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Role</th>
                         <th class="text-center px-3 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Aksi</th>
@@ -90,7 +97,7 @@
                         <tr>
                             <td class="px-3 py-3.5">
                                 <div class="flex items-center gap-3">
-                                    <div class="w-9 h-9 rounded-full bg-gradient-to-br {{ $user->isAdmin() ? 'from-purple-500 to-indigo-500' : 'from-blue-500 to-cyan-500' }} flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
+                                    <div class="w-9 h-9 rounded-full {{ $user->isAdmin() ? 'bg-blue-500' : 'bg-sky-400' }} flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
                                         {{ strtoupper(substr($user->name, 0, 1)) }}
                                     </div>
                                     <div>
@@ -107,7 +114,6 @@
                                     <span class="text-gray-400 text-xs">—</span>
                                 @endif
                             </td>
-                            <td class="px-3 py-3.5 text-gray-600 dt-col-hide-md">{{ $user->email }}</td>
                             <td class="px-3 py-3.5 text-center dt-col-hide-sm">
                                 <span class="bg-blue-100 text-blue-800 px-2.5 py-0.5 rounded-full text-xs font-semibold">{{ $user->aspirations_count }}</span>
                             </td>
@@ -119,14 +125,14 @@
                             <td class="px-3 py-3.5 text-center">
                                 <div class="flex justify-center gap-2">
                                     <button
-                                        onclick="openEditModal({{ $user->id }}, '{{ addslashes($user->name) }}', '{{ $user->email }}', '{{ $user->nis }}', '{{ $user->kelas }}')"
+                                        onclick="openEditModal({{ $user->id }}, '{{ addslashes($user->name) }}', '{{ $user->nis }}', '{{ $user->kelas }}')"
                                         class="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800 text-xs font-medium transition px-2 py-1 rounded hover:bg-blue-50"
                                     >
                                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                                         Edit
                                     </button>
                                     @if($user->id !== Auth::id())
-                                        <form method="POST" action="{{ route('users.destroy', $user) }}" onsubmit="return confirm('Yakin ingin menghapus pengguna \'{{ $user->name }}\'? Semua aspirasi miliknya juga akan dihapus!')">
+                                        <form method="POST" action="{{ route('users.destroy', $user) }}" data-confirm="Yakin ingin menghapus pengguna '{{ $user->name }}'? Semua aspirasi miliknya juga akan dihapus!">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="inline-flex items-center gap-1 text-red-500 hover:text-red-700 text-xs font-medium transition px-2 py-1 rounded hover:bg-red-50">
@@ -162,10 +168,6 @@
             <div>
                 <label class="block text-xs font-medium text-gray-600 mb-1.5">Nama Lengkap <span class="text-red-500">*</span></label>
                 <input type="text" name="name" id="edit-name" class="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm transition" required>
-            </div>
-            <div>
-                <label class="block text-xs font-medium text-gray-600 mb-1.5">Email <span class="text-red-500">*</span></label>
-                <input type="email" name="email" id="edit-email" class="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm transition" required>
             </div>
             <div class="grid grid-cols-2 gap-3">
                 <div>
@@ -222,10 +224,9 @@
         });
     });
 
-    function openEditModal(id, name, email, nis, kelas) {
+    function openEditModal(id, name, nis, kelas) {
         document.getElementById('editForm').action = '/users/' + id;
         document.getElementById('edit-name').value  = name;
-        document.getElementById('edit-email').value = email;
         document.getElementById('edit-nis').value   = nis || '';
         document.getElementById('edit-kelas').value = kelas || '';
         document.getElementById('edit-password').value = '';

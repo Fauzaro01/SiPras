@@ -16,10 +16,7 @@
         .fade-up-d3         { animation: fadeUp .65s .35s ease both; }
 
         .gradient-text {
-            background: linear-gradient(135deg, #2563eb, #7c3aed);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            color: #2563eb;
         }
 
         /* Subtle grid bg */
@@ -42,7 +39,7 @@
             left: calc(50% + 26px);
             right: calc(-50% + 26px);
             height: 2px;
-            background: linear-gradient(90deg, #c7d2fe, #ddd6fe);
+            background: #bfdbfe;
         }
     </style>
 </head>
@@ -53,7 +50,7 @@
         <div class="max-w-6xl mx-auto px-4 sm:px-6 flex items-center justify-between h-15 py-3">
             {{-- Logo --}}
             <a href="/" class="flex items-center gap-2.5">
-                <div class="w-8 h-8 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center shadow-sm">
+                <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center shadow-sm">
                     <svg class="w-4.5 h-4.5 text-white w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
                     </svg>
@@ -318,7 +315,7 @@
     {{-- ═══════════════ CTA ═══════════════ --}}
     <section class="py-20 bg-gray-50">
         <div class="max-w-3xl mx-auto px-4 sm:px-6 text-center">
-            <div class="bg-gradient-to-br from-blue-600 to-indigo-600 rounded-3xl p-12 relative overflow-hidden shadow-2xl">
+            <div class="bg-blue-600 rounded-3xl p-12 relative overflow-hidden shadow-xl">
                 <div class="absolute -top-12 -right-12 w-48 h-48 bg-white/10 rounded-full"></div>
                 <div class="absolute -bottom-12 -left-12 w-40 h-40 bg-white/10 rounded-full"></div>
                 <div class="relative">
@@ -340,7 +337,7 @@
     <footer class="bg-gray-900 text-gray-400 py-10">
         <div class="max-w-5xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
             <div class="flex items-center gap-2">
-                <div class="w-7 h-7 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center">
+                <div class="w-7 h-7 bg-blue-600 rounded-lg flex items-center justify-center">
                     <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
                     </svg>

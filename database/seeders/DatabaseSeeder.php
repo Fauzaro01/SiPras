@@ -23,7 +23,6 @@ class DatabaseSeeder extends Seeder
         $admin = User::create([
             'name'     => 'Admin SiPras',
             'username' => 'admin',
-            'email'    => 'admin@sipras.com',
             'role'     => 'admin',
             'password' => Hash::make('admin123'),
         ]);
@@ -33,7 +32,6 @@ class DatabaseSeeder extends Seeder
             'name'     => 'Budi Santoso',
             'nis'      => '12345',
             'kelas'    => 'X-1',
-            'email'    => 'budi@siswa.com',
             'role'     => 'siswa',
             'password' => Hash::make('12345'),
         ]);
@@ -42,7 +40,6 @@ class DatabaseSeeder extends Seeder
             'name'     => 'Siti Nurhaliza',
             'nis'      => '12346',
             'kelas'    => 'X-2',
-            'email'    => 'siti@siswa.com',
             'role'     => 'siswa',
             'password' => Hash::make('12346'),
         ]);
@@ -51,7 +48,6 @@ class DatabaseSeeder extends Seeder
             'name'     => 'Ahmad Fauzi',
             'nis'      => '12347',
             'kelas'    => 'XI-1',
-            'email'    => 'ahmad@siswa.com',
             'role'     => 'siswa',
             'password' => Hash::make('12347'),
         ]);

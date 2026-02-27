@@ -19,6 +19,42 @@ class UserController extends Controller
         return view('users.index', compact('users'));
     }
 
+    public function create()
+    {
+        if (!Auth::user()->isAdmin()) {
+            abort(403);
+        }
+
+        return view('users.create');
+    }
+
+    public function store(Request $request)
+    {
+        if (!Auth::user()->isAdmin()) {
+            abort(403);
+        }
+
+        $rules = [
+            'name'     => 'required|string|max:255',
+            'role'     => 'required|in:admin,siswa',
+            'password' => 'required|string|min:6|confirmed',
+        ];
+
+        if ($request->role === 'admin') {
+            $rules['username'] = 'required|string|max:50|unique:users,username';
+        } else {
+            $rules['nis']   = 'required|string|max:20|unique:users,nis';
+            $rules['kelas'] = 'nullable|string|max:50';
+        }
+
+        $validated = $request->validate($rules);
+        $validated['password'] = Hash::make($validated['password']);
+
+        User::create($validated);
+
+        return redirect()->route('users.index')->with('success', 'Pengguna baru berhasil ditambahkan!');
+    }
+
     public function update(Request $request, User $user)
     {
         if (!Auth::user()->isAdmin()) {
@@ -27,7 +63,6 @@ class UserController extends Controller
 
         $rules = [
             'name'  => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . $user->id,
             'kelas' => 'nullable|string|max:50',
             'nis'   => 'nullable|string|max:20|unique:users,nis,' . $user->id,
         ];
