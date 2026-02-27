@@ -1,59 +1,275 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# SiPras - Sistem Prasarana Sekolah
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+<div align="center">
 
-## About Laravel
+[![Laravel](https://img.shields.io/badge/Laravel-11-FF2D20?style=flat-square&logo=laravel)](https://laravel.com)
+[![PHP](https://img.shields.io/badge/PHP-%3E%3D%208.2-777BB4?style=flat-square&logo=php)](https://www.php.net/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-4-06B6D4?style=flat-square&logo=tailwind-css)](https://tailwindcss.com)
+[![License](https://img.shields.io/badge/License-MIT-green.svg?style=flat-square)](LICENSE)
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Aplikasi web modern untuk mengelola dan merespons aspirasi/pengaduan prasarana sekolah.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+</div>
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Tentang Proyek
 
-## Learning Laravel
+**SiPras** adalah sistem informasi berbasis web yang dirancang untuk memfasilitasi komunikasi antara siswa dan manajemen sekolah dalam mengelola kerusakan atau masalah prasarana sekolah. Siswa dapat dengan mudah melaporkan masalah prasarana, sementara admin dapat mengelola, merespons, dan melacak status setiap laporan.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+## 🎯 Fitur Utama
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- **Autentikasi Multi-Role**:
+    - Admin login dengan username
+    - Siswa login dengan NIS (Nomor Induk Siswa)
 
-## Laravel Sponsors
+- **Dashboard Statistik**:
+    - Ringkasan total aspirasi
+    - Grafik distribusi berdasarkan status (pending, ditanggapi, ditutup)
+    - Statistik perbulan
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+- **Manajemen Aspirasi**:
+    - Siswa dapat membuat aspirasi baru dengan kategori, deskripsi, dan lokasi
+    - Upload foto bukti kerusakan
+    - Melihat riwayat aspirasi mereka
+    - Menghapus aspirasi mereka sendiri
 
-### Premium Partners
+- **Pengelolaan Admin**:
+    - Melihat semua aspirasi dari seluruh siswa
+    - Filter dan pencarian aspirasi
+    - Mengubah status aspirasi (pending, ditanggapi, ditutup)
+    - Memberikan tanggapan/respon terhadap laporan
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+- **Interface Modern**:
+    - Desain responsif menggunakan Tailwind CSS
+    - UI intuitif dan mudah digunakan
+    - Kompatibel dengan perangkat desktop dan mobile
 
-## Contributing
+## 🛠️ Teknologi
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+| Teknologi            | Versi | Deskripsi                   |
+| -------------------- | ----- | --------------------------- |
+| **Laravel**          | 11    | Framework PHP modern        |
+| **PHP**              | ≥ 8.2 | Bahasa pemrograman backend  |
+| **Tailwind CSS**     | 4     | Framework CSS untuk styling |
+| **Vite**             | 7+    | Build tool cepat            |
+| **MySQL/PostgreSQL** | -     | Database relasional         |
+| **Composer**         | -     | Package manager PHP         |
+| **NPM**              | -     | Package manager JavaScript  |
 
-## Code of Conduct
+## 📦 Instalasi
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### Prasyarat
 
-## Security Vulnerabilities
+- PHP 8.2 atau lebih tinggi
+- Composer
+- Node.js dan NPM
+- Database server (MySQL atau PostgreSQL)
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### Langkah-langkah
 
-## License
+1. **Clone atau setup project**
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+    ```bash
+    cd c:\Users\Fauzaro01\Documents\Github\SiPras
+    ```
+
+2. **Install dependencies PHP dan JavaScript**
+
+    ```bash
+    composer install
+    npm install
+    ```
+
+3. **Setup environment**
+
+    ```bash
+    copy .env.example .env
+    php artisan key:generate
+    ```
+
+4. **Konfigurasi database** (edit file `.env`)
+
+    ```env
+    DB_CONNECTION=mysql
+    DB_HOST=127.0.0.1
+    DB_PORT=3306
+    DB_DATABASE=sipras
+    DB_USERNAME=root
+    DB_PASSWORD=
+    ```
+
+5. **Jalankan migrasi database**
+
+    ```bash
+    php artisan migrate:fresh --seed
+    ```
+
+6. **Build assets (development)**
+
+    ```bash
+    npm run dev
+    ```
+
+7. **Jalankan aplikasi**
+
+    ```bash
+    php artisan serve
+    ```
+
+8. **Akses aplikasi**
+   Buka browser dan akses: `http://localhost:8000`
+
+## 👤 Akun Default
+
+Setelah menjalankan seeder, gunakan akun berikut untuk testing:
+
+### Admin
+
+| Field        | Nilai      |
+| ------------ | ---------- |
+| **Username** | `admin`    |
+| **Password** | `admin123` |
+
+### Siswa
+
+| NIS     | Password | Nama           | Kelas |
+| ------- | -------- | -------------- | ----- |
+| `12345` | `12345`  | Budi Santoso   | X-1   |
+| `12346` | `12346`  | Siti Nurhaliza | X-2   |
+| `12347` | `12347`  | Ahmad Fauzi    | XI-1  |
+
+## 📊 Struktur Database
+
+### Tabel Users
+
+| Field      | Tipe    | Deskripsi                       |
+| ---------- | ------- | ------------------------------- |
+| `id`       | INT     | Primary key                     |
+| `name`     | VARCHAR | Nama lengkap pengguna           |
+| `email`    | VARCHAR | Email (opsional)                |
+| `username` | VARCHAR | Username untuk admin (opsional) |
+| `nis`      | VARCHAR | NIS untuk siswa (opsional)      |
+| `role`     | ENUM    | Role pengguna: admin atau siswa |
+| `kelas`    | VARCHAR | Kelas siswa (opsional)          |
+| `password` | VARCHAR | Password terenkripsi            |
+
+### Tabel Categories
+
+| Field       | Tipe    | Deskripsi               |
+| ----------- | ------- | ----------------------- |
+| `id`        | INT     | Primary key             |
+| `nama`      | VARCHAR | Nama kategori prasarana |
+| `deskripsi` | TEXT    | Deskripsi kategori      |
+
+### Tabel Aspirations
+
+| Field         | Tipe      | Deskripsi                            |
+| ------------- | --------- | ------------------------------------ |
+| `id`          | INT       | Primary key                          |
+| `user_id`     | INT       | Foreign key ke tabel users           |
+| `category_id` | INT       | Foreign key ke tabel categories      |
+| `judul`       | VARCHAR   | Judul aspirasi                       |
+| `deskripsi`   | TEXT      | Deskripsi lengkap masalah            |
+| `lokasi`      | VARCHAR   | Lokasi detail masalah                |
+| `bukti_foto`  | VARCHAR   | Path file foto bukti (opsional)      |
+| `status`      | ENUM      | Status: pending, ditanggapi, ditutup |
+| `tanggapan`   | TEXT      | Tanggapan dari admin (opsional)      |
+| `created_at`  | TIMESTAMP | Waktu pembuatan                      |
+| `updated_at`  | TIMESTAMP | Waktu terakhir diupdate              |
+
+## 🚀 Menjalankan Development
+
+### Development dengan Watch Mode
+
+```bash
+npm run dev
+```
+
+### Production Build
+
+```bash
+npm run build
+```
+
+### Artisan Commands yang Berguna
+
+```bash
+# Membuat migration baru
+php artisan make:migration nama_migration
+
+# Membuat model baru
+php artisan make:model NamaModel
+
+# Membuat controller
+php artisan make:controller NamaController
+
+# Reset database
+php artisan migrate:reset
+
+# Seed database
+php artisan db:seed
+```
+
+## 📁 Struktur Folder
+
+```
+├── app/
+│   ├── Http/
+│   │   ├── Controllers/      # Controller aplikasi
+│   │   └── Middleware/       # Middleware
+│   ├── Models/               # Eloquent models
+│   └── Providers/            # Service providers
+├── bootstrap/                # Bootstrap aplikasi
+├── config/                   # File konfigurasi
+├── database/
+│   ├── migrations/           # Database migrations
+│   ├── factories/            # Model factories
+│   └── seeders/              # Database seeders
+├── public/                   # File publik
+├── resources/
+│   ├── css/                  # CSS files
+│   ├── js/                   # JavaScript files
+│   └── views/                # Blade templates
+├── routes/                   # Route definitions
+├── storage/                  # File penyimpanan
+├── tests/                    # Test files
+└── vendor/                   # Dependencies (auto-generated)
+```
+
+## 🔐 Keamanan
+
+- Password disimpan dengan hashing bcrypt
+- CSRF protection pada semua form
+- Role-based access control (RBAC)
+- Input validation pada semua endpoints
+
+## 📝 Lisensi
+
+Proyek ini dilisensikan di bawah lisensi MIT. Lihat file [LICENSE](LICENSE) untuk detail lengkapnya.
+
+## 👨‍💻 Kontribusi
+
+Kontribusi sangat diterima! Untuk berkontribusi:
+
+1. Fork repository ini
+2. Buat branch fitur baru (`git checkout -b feature/AmazingFeature`)
+3. Commit perubahan (`git commit -m 'Add some AmazingFeature'`)
+4. Push ke branch (`git push origin feature/AmazingFeature`)
+5. Buka Pull Request
+
+## 📞 Support
+
+Jika Anda memiliki pertanyaan atau menemukan bug, silakan buka issue di repository ini.
+
+## 📅 Changelog
+
+### v1.0.0 (2026-02-26)
+
+- Initial release
+- Fitur autentikasi multi-role
+- Dashboard statistik
+- Manajemen aspirasi
+- Pengelolaan admin
+
+---
+
+**Dibuat dengan ❤️ menggunakan Laravel dan Tailwind CSS**
