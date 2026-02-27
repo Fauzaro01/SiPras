@@ -230,7 +230,7 @@
                                 <td class="px-3 py-3.5 text-gray-600 dt-col-hide-sm">{{ $aspiration->lokasi }}</td>
                                 <td class="px-3 py-3.5">
                                     <span class="inline-flex px-2.5 py-0.5 rounded-full text-xs font-semibold {{ $aspiration->status_color }}">
-                                        {{ ucfirst($aspiration->status) }}
+                                        {{ $aspiration->status_label }}
                                     </span>
                                 </td>
                                 <td class="px-3 py-3.5 text-gray-500 dt-col-hide-sm" data-order="{{ $aspiration->created_at->format('Y-m-d') }}">

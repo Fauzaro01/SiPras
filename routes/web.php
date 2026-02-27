@@ -6,6 +6,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AspirationController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\FeedbackController;
 
 // Landing Page
 Route::get('/', function () {
@@ -32,6 +33,12 @@ Route::middleware('auth')->group(function () {
     Route::post('/aspirations/{aspiration}/update-status', [AspirationController::class, 'updateStatus'])
         ->name('aspirations.update-status');
     Route::get('/histori', [AspirationController::class, 'histori'])->name('aspirations.histori');
+
+    // Feedback Routes (Admin only)
+    Route::post('/aspirations/{aspiration}/feedbacks', [FeedbackController::class, 'store'])
+        ->name('feedbacks.store');
+    Route::delete('/aspirations/{aspiration}/feedbacks/{feedback}', [FeedbackController::class, 'destroy'])
+        ->name('feedbacks.destroy');
 
     // Category Routes (Admin only)
     Route::resource('categories', CategoryController::class)->only(['index', 'store', 'update', 'destroy']);

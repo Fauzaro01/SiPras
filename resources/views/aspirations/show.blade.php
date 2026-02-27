@@ -4,9 +4,10 @@
 @section('page-title', 'Detail Aspirasi')
 
 @section('content')
-<div class="max-w-4xl mx-auto">
-    <!-- Back Button -->
-    <div class="mb-4">
+<div class="max-w-4xl mx-auto space-y-6">
+
+    {{-- Back Button --}}
+    <div>
         <a href="{{ route('aspirations.index') }}" class="inline-flex items-center gap-1 text-blue-600 hover:text-blue-700 font-medium text-sm transition">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
@@ -15,9 +16,9 @@
         </a>
     </div>
 
-    <!-- Main Card -->
+    {{-- ═══ Main Card ═══ --}}
     <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-        <!-- Header -->
+        {{-- Header --}}
         <div class="bg-gradient-to-r from-blue-600 to-indigo-600 p-5 sm:p-6 text-white">
             <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3">
                 <div class="flex-1">
@@ -28,14 +29,14 @@
                     </div>
                 </div>
                 <span class="px-3 py-1.5 rounded-full text-xs sm:text-sm font-semibold {{ $aspiration->status_color }} self-start flex-shrink-0">
-                    {{ ucfirst($aspiration->status) }}
+                    {{ $aspiration->status_label }}
                 </span>
             </div>
         </div>
 
-        <!-- Content -->
         <div class="p-5 sm:p-6 space-y-6">
-            <!-- Bukti Foto -->
+
+            {{-- Bukti Foto --}}
             @if($aspiration->bukti_foto)
                 <div class="flex items-center justify-between bg-blue-50 border border-blue-100 rounded-lg px-4 py-3">
                     <div class="flex items-center gap-3">
@@ -49,10 +50,8 @@
                             <p class="text-xs text-blue-500">Klik tombol untuk melihat foto bukti aspirasi</p>
                         </div>
                     </div>
-                    <button
-                        onclick="openLightbox('{{ asset('storage/' . $aspiration->bukti_foto) }}')"
-                        class="flex-shrink-0 inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold px-4 py-2 rounded-lg transition shadow-sm"
-                    >
+                    <button onclick="openLightbox('{{ asset('storage/' . $aspiration->bukti_foto) }}')"
+                        class="flex-shrink-0 inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold px-4 py-2 rounded-lg transition shadow-sm">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
@@ -62,7 +61,7 @@
                 </div>
             @endif
 
-            <!-- Informasi Pelapor (untuk admin) -->
+            {{-- Informasi Pelapor (admin only) --}}
             @if(Auth::user()->isAdmin())
                 <div class="bg-gray-50 rounded-lg p-4">
                     <h3 class="font-semibold text-gray-800 mb-3 text-sm">Informasi Pelapor</h3>
@@ -89,7 +88,7 @@
                 </div>
             @endif
 
-            <!-- Deskripsi -->
+            {{-- Deskripsi --}}
             <div>
                 <h3 class="font-semibold text-gray-800 mb-2 text-sm">Deskripsi Masalah</h3>
                 <div class="bg-gray-50 rounded-lg p-4">
@@ -97,111 +96,213 @@
                 </div>
             </div>
 
-            <!-- Tanggapan Admin -->
-            @if($aspiration->tanggapan_admin)
-                <div>
-                    <h3 class="font-semibold text-gray-800 mb-2 text-sm">Tanggapan Admin</h3>
-                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                        <p class="text-gray-700 text-sm leading-relaxed whitespace-pre-line">{{ $aspiration->tanggapan_admin }}</p>
-                    </div>
-                </div>
-            @endif
-
-            <!-- Admin Action Form -->
+            {{-- Admin: Update Status Form --}}
             @if(Auth::user()->isAdmin())
-                <div class="border-t pt-6">
-                    <h3 class="font-semibold text-gray-800 mb-4 text-sm">Update Status & Tanggapan</h3>
-                    <form method="POST" action="{{ route('aspirations.update-status', $aspiration) }}" class="space-y-4">
+                <div class="border-t pt-5">
+                    <h3 class="font-semibold text-gray-800 mb-3 text-sm">Update Status Aspirasi</h3>
+                    <form method="POST" action="{{ route('aspirations.update-status', $aspiration) }}" class="flex flex-col sm:flex-row items-end gap-3">
                         @csrf
-                        
-                        <div>
-                            <label for="status" class="block text-sm font-medium text-gray-700 mb-1.5">Status</label>
-                            <select 
-                                name="status" 
-                                id="status" 
-                                class="w-full sm:w-auto px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm transition"
-                            >
-                                <option value="diproses" {{ $aspiration->status == 'diproses' ? 'selected' : '' }}>Diproses</option>
-                                <option value="selesai" {{ $aspiration->status == 'selesai' ? 'selected' : '' }}>Selesai</option>
-                                <option value="ditolak" {{ $aspiration->status == 'ditolak' ? 'selected' : '' }}>Ditolak</option>
+                        <div class="w-full sm:w-64">
+                            <label for="status" class="block text-xs font-medium text-gray-700 mb-1">Status</label>
+                            <select name="status" id="status"
+                                class="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm transition bg-white">
+                                <option value="diajukan" {{ $aspiration->status == 'diajukan' ? 'selected' : '' }}>🟡 Diajukan</option>
+                                <option value="diproses" {{ $aspiration->status == 'diproses' ? 'selected' : '' }}>🔵 Diproses</option>
+                                <option value="selesai"  {{ $aspiration->status == 'selesai'  ? 'selected' : '' }}>🟢 Selesai</option>
+                                <option value="ditolak"  {{ $aspiration->status == 'ditolak'  ? 'selected' : '' }}>🔴 Ditolak</option>
                             </select>
                         </div>
-
-                        <div>
-                            <label for="tanggapan_admin" class="block text-sm font-medium text-gray-700 mb-1.5">Tanggapan</label>
-                            <textarea 
-                                name="tanggapan_admin" 
-                                id="tanggapan_admin" 
-                                rows="4"
-                                class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm transition"
-                                placeholder="Berikan tanggapan kepada siswa..."
-                            >{{ $aspiration->tanggapan_admin }}</textarea>
-                        </div>
-
-                        <div class="flex justify-end">
-                            <button 
-                                type="submit"
-                                class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg font-semibold shadow-sm hover:shadow-md transition text-sm"
-                            >
-                                Update Status
-                            </button>
-                        </div>
+                        <button type="submit"
+                            class="flex-shrink-0 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-lg font-semibold shadow-sm hover:shadow-md transition text-sm">
+                            Simpan Status
+                        </button>
                     </form>
                 </div>
             @endif
 
-            <!-- Delete Button (for student's own aspiration that is still being processed) -->
-            @if(Auth::user()->isSiswa() && $aspiration->user_id === Auth::id() && $aspiration->status === 'diproses')
-                <div class="border-t pt-6">
-                    <form method="POST" action="{{ route('aspirations.destroy', $aspiration) }}" onsubmit="return confirm('Yakin ingin menghapus aspirasi ini?')">
+            {{-- Tombol Hapus (siswa sendiri, status diajukan) --}}
+            @if(Auth::user()->isSiswa() && $aspiration->user_id === Auth::id() && $aspiration->status === 'diajukan')
+                <div class="border-t pt-5">
+                    <form method="POST" action="{{ route('aspirations.destroy', $aspiration) }}"
+                        onsubmit="return confirm('Yakin ingin menghapus aspirasi ini?')">
                         @csrf
                         @method('DELETE')
-                        <button 
-                            type="submit"
-                            class="bg-red-500 hover:bg-red-600 text-white px-5 py-2 rounded-lg font-semibold transition text-sm"
-                        >
+                        <button type="submit"
+                            class="bg-red-500 hover:bg-red-600 text-white px-5 py-2 rounded-lg font-semibold transition text-sm">
                             Hapus Aspirasi
                         </button>
                     </form>
                 </div>
             @endif
+
         </div>
     </div>
 
-    <!-- Timeline -->
-    <div class="mt-6 bg-white rounded-xl shadow-sm border border-gray-100 p-5 sm:p-6">
-        <h3 class="font-semibold text-gray-800 mb-4 text-sm">Timeline</h3>
-        <div class="space-y-3">
-            <div class="flex items-start">
-                <div class="flex-shrink-0">
-                    <div class="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center">
-                        <svg class="h-5 w-5 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                        </svg>
-                    </div>
-                </div>
-                <div class="ml-3">
-                    <p class="text-sm font-medium text-gray-900">Aspirasi dibuat</p>
-                    <p class="text-xs text-gray-500">{{ $aspiration->created_at->format('d M Y, H:i') }}</p>
-                </div>
+    {{-- ═══ Feedback Timeline ═══ --}}
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+        <div class="px-5 sm:px-6 py-4 border-b border-gray-100 flex items-center gap-2">
+            <div class="w-7 h-7 rounded-lg bg-indigo-100 flex items-center justify-center">
+                <svg class="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/>
+                </svg>
             </div>
-            @if($aspiration->updated_at != $aspiration->created_at)
-                <div class="flex items-start">
-                    <div class="flex-shrink-0">
-                        <div class="h-8 w-8 rounded-full bg-green-100 flex items-center justify-center">
-                            <svg class="h-5 w-5 text-green-600" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+            <h3 class="font-semibold text-gray-800 text-sm">Feedback & Timeline</h3>
+            @if($aspiration->feedbacks->count() > 0)
+                <span class="bg-indigo-100 text-indigo-700 text-xs font-bold px-2 py-0.5 rounded-full">
+                    {{ $aspiration->feedbacks->count() }}
+                </span>
+            @endif
+        </div>
+
+        <div class="p-5 sm:p-6">
+            {{-- Timeline list --}}
+            <div class="relative">
+                {{-- Garis vertikal --}}
+                <div class="absolute left-4 top-0 bottom-0 w-0.5 bg-gray-100"></div>
+
+                <div class="space-y-0">
+
+                    {{-- Item: Aspirasi diajukan --}}
+                    <div class="relative flex items-start pb-6">
+                        <div class="flex-shrink-0 w-8 h-8 rounded-full bg-yellow-100 border-2 border-white shadow-sm flex items-center justify-center z-10">
+                            <svg class="w-4 h-4 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
                             </svg>
                         </div>
+                        <div class="ml-4 flex-1 min-w-0">
+                            <p class="text-sm font-semibold text-gray-800">Aspirasi diajukan</p>
+                            <p class="text-xs text-gray-400 mt-0.5">{{ $aspiration->created_at->translatedFormat('d F Y, H:i') }}</p>
+                            <p class="text-xs text-gray-500 mt-1">oleh <span class="font-medium">{{ $aspiration->user->name ?? 'Siswa' }}</span></p>
+                        </div>
                     </div>
-                    <div class="ml-3">
-                        <p class="text-sm font-medium text-gray-900">Status diupdate ke <span class="capitalize">{{ $aspiration->status }}</span></p>
-                        <p class="text-xs text-gray-500">{{ $aspiration->updated_at->format('d M Y, H:i') }}</p>
-                    </div>
+
+                    {{-- Items: Setiap feedback --}}
+                    @foreach($aspiration->feedbacks as $feedback)
+                        <div class="relative flex items-start pb-6" id="feedback-{{ $feedback->id }}">
+                            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-indigo-100 border-2 border-white shadow-sm flex items-center justify-center z-10">
+                                <svg class="w-4 h-4 text-indigo-600" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clip-rule="evenodd"/>
+                                </svg>
+                            </div>
+                            <div class="ml-4 flex-1 min-w-0">
+                                <div class="flex items-start justify-between gap-2">
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-xs text-gray-400">
+                                            <span class="font-semibold text-gray-700">{{ $feedback->user->name ?? 'Admin' }}</span>
+                                            &middot; {{ $feedback->created_at->translatedFormat('d F Y, H:i') }}
+                                        </p>
+                                        <div class="mt-2 bg-indigo-50 border border-indigo-100 rounded-lg px-4 py-3">
+                                            <p class="text-sm text-gray-700 leading-relaxed whitespace-pre-line">{{ $feedback->pesan }}</p>
+                                        </div>
+                                    </div>
+                                    @if(Auth::user()->isAdmin())
+                                        <form method="POST"
+                                            action="{{ route('feedbacks.destroy', [$aspiration, $feedback]) }}"
+                                            onsubmit="return confirm('Hapus feedback ini?')"
+                                            class="flex-shrink-0 mt-0.5">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" title="Hapus feedback"
+                                                class="p-1.5 text-gray-300 hover:text-red-500 transition rounded-md hover:bg-red-50">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                                </svg>
+                                            </button>
+                                        </form>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+
+                    {{-- Item terakhir: status saat ini (jika bukan diajukan) --}}
+                    @if($aspiration->status !== 'diajukan')
+                        @php
+                            $dotBg = match($aspiration->status) {
+                                'diproses' => 'bg-blue-500',
+                                'selesai'  => 'bg-green-500',
+                                'ditolak'  => 'bg-red-500',
+                                default    => 'bg-gray-400',
+                            };
+                        @endphp
+                        <div class="relative flex items-start">
+                            <div class="flex-shrink-0 w-8 h-8 rounded-full {{ $dotBg }} border-2 border-white shadow-sm flex items-center justify-center z-10">
+                                @if($aspiration->status === 'selesai')
+                                    <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                                    </svg>
+                                @elseif($aspiration->status === 'ditolak')
+                                    <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                                    </svg>
+                                @else
+                                    <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/>
+                                    </svg>
+                                @endif
+                            </div>
+                            <div class="ml-4 flex-1">
+                                <p class="text-sm font-semibold text-gray-800">
+                                    Status diubah ke
+                                    <span class="inline-flex px-2 py-0.5 rounded-full text-xs font-semibold {{ $aspiration->status_color }}">
+                                        {{ $aspiration->status_label }}
+                                    </span>
+                                </p>
+                                <p class="text-xs text-gray-400 mt-0.5">{{ $aspiration->updated_at->translatedFormat('d F Y, H:i') }}</p>
+                            </div>
+                        </div>
+                    @endif
+
+                </div>
+            </div>
+
+            {{-- Empty feedback state --}}
+            @if($aspiration->feedbacks->count() === 0)
+                <div class="mt-2 text-center py-4">
+                    <p class="text-gray-400 text-sm">Belum ada feedback dari admin</p>
+                </div>
+            @endif
+
+            {{-- Form Tambah Feedback (admin only) --}}
+            @if(Auth::user()->isAdmin())
+                <div class="mt-5 pt-5 border-t border-gray-100">
+                    <h4 class="text-sm font-semibold text-gray-700 mb-3">Tambah Feedback</h4>
+
+                    @if(session('success'))
+                        <div class="mb-3 flex items-center gap-2 bg-green-50 border border-green-200 rounded-lg px-4 py-2.5">
+                            <svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                            </svg>
+                            <p class="text-green-700 text-sm">{{ session('success') }}</p>
+                        </div>
+                    @endif
+
+                    <form method="POST" action="{{ route('feedbacks.store', $aspiration) }}" class="space-y-3">
+                        @csrf
+                        <textarea
+                            name="pesan"
+                            rows="3"
+                            class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 text-sm transition resize-none bg-gray-50 focus:bg-white"
+                            placeholder="Tulis feedback untuk aspirasi ini..."
+                        >{{ old('pesan') }}</textarea>
+                        @error('pesan')
+                            <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
+                        @enderror
+                        <div class="flex justify-end">
+                            <button type="submit"
+                                class="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-lg font-semibold shadow-sm hover:shadow-md transition text-sm">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
+                                </svg>
+                                Kirim Feedback
+                            </button>
+                        </div>
+                    </form>
                 </div>
             @endif
         </div>
     </div>
+
 </div>
 
 {{-- Lightbox Modal --}}

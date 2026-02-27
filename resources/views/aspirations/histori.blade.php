@@ -80,7 +80,7 @@
                             <th class="text-left px-3 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Judul & Kategori</th>
                             <th class="text-left px-3 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider dt-col-hide-sm">Lokasi</th>
                             <th class="text-left px-3 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Status</th>
-                            <th class="text-left px-3 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider dt-col-hide-md">Tanggapan</th>
+                            <th class="text-left px-3 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider dt-col-hide-md">Feedback</th>
                             <th class="text-left px-3 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider dt-col-hide-sm">Tanggal</th>
                             <th class="text-center px-3 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Aksi</th>
                         </tr>
@@ -95,12 +95,16 @@
                                 <td class="px-3 py-3.5 text-gray-600 dt-col-hide-sm">{{ $aspiration->lokasi }}</td>
                                 <td class="px-3 py-3.5">
                                     <span class="inline-flex px-2.5 py-0.5 rounded-full text-xs font-semibold {{ $aspiration->status_color }}">
-                                        {{ ucfirst($aspiration->status) }}
+                                        {{ $aspiration->status_label }}
                                     </span>
                                 </td>
                                 <td class="px-3 py-3.5 dt-col-hide-md">
-                                    @if($aspiration->tanggapan_admin)
-                                        <p class="text-gray-600 text-xs line-clamp-2 max-w-[200px]">{{ $aspiration->tanggapan_admin }}</p>
+                                    @php $feedbackCount = $aspiration->feedbacks->count(); @endphp
+                                    @if($feedbackCount > 0)
+                                        <span class="inline-flex items-center gap-1 text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded-full text-xs font-semibold">
+                                            <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7z" clip-rule="evenodd"/></svg>
+                                            {{ $feedbackCount }}
+                                        </span>
                                     @else
                                         <span class="text-gray-300 text-xs">—</span>
                                     @endif

@@ -29,7 +29,7 @@ class AspirationController extends Controller
             abort(403);
         }
 
-        $aspirations = Auth::user()->aspirations()->with('category')
+        $aspirations = Auth::user()->aspirations()->with(['category', 'feedbacks'])
             ->whereIn('status', ['selesai', 'ditolak'])
             ->latest()->get();
 
@@ -53,6 +53,7 @@ class AspirationController extends Controller
         ]);
 
         $validated['user_id']    = Auth::id();
+        $validated['status']     = 'diajukan';
         $validated['bukti_foto'] = $request->file('bukti_foto')->store('bukti_foto', 'public');
 
         Aspiration::create($validated);
@@ -67,7 +68,7 @@ class AspirationController extends Controller
             abort(403);
         }
 
-        $aspiration->load(['user', 'category']);
+        $aspiration->load(['user', 'category', 'feedbacks.user']);
         return view('aspirations.show', compact('aspiration'));
     }
 
@@ -78,8 +79,7 @@ class AspirationController extends Controller
         }
 
         $validated = $request->validate([
-            'status' => 'required|in:diproses,selesai,ditolak',
-            'tanggapan_admin' => 'nullable|string',
+            'status' => 'required|in:diajukan,diproses,selesai,ditolak',
         ]);
 
         $aspiration->update($validated);
