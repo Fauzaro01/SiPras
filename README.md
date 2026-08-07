@@ -2,10 +2,14 @@
 
 <div align="center">
 
-[![Laravel](https://img.shields.io/badge/Laravel-11-FF2D20?style=flat-square&logo=laravel)](https://laravel.com)
+[![Laravel](https://img.shields.io/badge/Laravel-12-FF2D20?style=flat-square&logo=laravel)](https://laravel.com)
 [![PHP](https://img.shields.io/badge/PHP-%3E%3D%208.2-777BB4?style=flat-square&logo=php)](https://www.php.net/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-4-06B6D4?style=flat-square&logo=tailwind-css)](https://tailwindcss.com)
+[![Pest](https://img.shields.io/badge/Test-Pest-green?style=flat-square&logo=php)](build)
 [![License](https://img.shields.io/badge/License-MIT-green.svg?style=flat-square)](LICENSE)
+
+[![CI](https://github.com/fauzaro01/SiPras/actions/workflows/ci.yml/badge.svg)](https://github.com/fauzaro01/SiPras/actions)
+[![Contributions Welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat-square)](CONTRIBUTING.md)
 
 Aplikasi web modern untuk mengelola dan merespons aspirasi/pengaduan prasarana sekolah.
 
@@ -47,13 +51,25 @@ Aplikasi web modern untuk mengelola dan merespons aspirasi/pengaduan prasarana s
 
 | Teknologi            | Versi | Deskripsi                   |
 | -------------------- | ----- | --------------------------- |
-| **Laravel**          | 11    | Framework PHP modern        |
+| **Laravel**          | 12    | Framework PHP modern        |
 | **PHP**              | ≥ 8.2 | Bahasa pemrograman backend  |
 | **Tailwind CSS**     | 4     | Framework CSS untuk styling |
 | **Vite**             | 7+    | Build tool cepat            |
 | **MySQL/PostgreSQL** | -     | Database relasional         |
 | **Composer**         | -     | Package manager PHP         |
 | **NPM**              | -     | Package manager JavaScript  |
+| **Pest**             | 4     | Framework pengujian         |
+
+## 📝 Status Aspirasi
+
+Alur status pada aplikasi:
+
+```
+diajukan → diproses → selesai
+                    ↘ ditolak
+```
+
+Setiap aspirasi memiliki 4 status: `diajukan`, `diproses`, `selesai`, dan `ditolak`. Siswa dapat melihat progress melalui halaman detail, sementara admin mengubah status melalui panel pengelolaan.
 
 ## 📦 Instalasi
 
@@ -136,6 +152,32 @@ Setelah menjalankan seeder, gunakan akun berikut untuk testing:
 | `12345` | `12345`  | Budi Santoso   | X-1   |
 | `12346` | `12346`  | Siti Nurhaliza | X-2   |
 | `12347` | `12347`  | Ahmad Fauzi    | XI-1  |
+
+## 🧪 Testing
+
+Projek ini menggunakan **Pest** untuk pengujian otomatis (dijalankan secara otomatis di CI).
+
+```bash
+# Menjalankan seluruh test
+composer test
+# atau
+php artisan test
+
+# Menjalankan test untuk modul tertentu
+php artisan test --filter=Siswa
+php artisan test --filter=Admin
+
+# Pengecekan kode style (Pint)
+vendor/bin/pint
+```
+
+## 🐳 Docker (Opsional)
+
+Proyek menyertakan konfigurasi Docker. Lihat `docker-compose.yml` dan `Dockerfile`.
+
+```bash
+docker compose up -d --build
+```
 
 ## 📊 Struktur Database
 
@@ -250,15 +292,18 @@ Proyek ini dilisensikan di bawah lisensi MIT. Lihat file [LICENSE](LICENSE) untu
 
 Kontribusi sangat diterima! Untuk berkontribusi:
 
-1. Fork repository ini
-2. Buat branch fitur baru (`git checkout -b feature/AmazingFeature`)
-3. Commit perubahan (`git commit -m 'Add some AmazingFeature'`)
-4. Push ke branch (`git push origin feature/AmazingFeature`)
-5. Buka Pull Request
+1. Baca panduan di [CONTRIBUTING.md](CONTRIBUTING.md)
+2. Fork repository ini
+3. Buat branch fitur baru (`git checkout -b feature/AmazingFeature`)
+4. Commit perubahan (`git commit -m 'feat: Add some AmazingFeature'`)
+5. Push ke branch (`git push origin feature/AmazingFeature`)
+6. Buka Pull Request
 
-## 📞 Support
+Harap perhatikan [Kode Etik](CODE_OF_CONDUCT.md) dan tinjau kebijakan keamanan di [SECURITY.md](SECURITY.md).
 
-Jika Anda memiliki pertanyaan atau menemukan bug, silakan buka issue di repository ini.
+## 📧 Dukungan
+
+Jika Anda memiliki pertanyaan atau menemukan bug, silakan buka issue di repository ini menggunakan template yang telah disediakan.
 
 ## 📅 Changelog
 

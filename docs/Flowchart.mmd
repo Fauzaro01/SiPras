@@ -1,0 +1,39 @@
+flowchart TD
+    A([Start]) --> B[Buka SiPras]
+    B --> C{Sudah login?}
+
+    C -- Tidak --> D[Input Username/NIS + Password]
+    D --> E{Akun valid?}
+    E -- Tidak --> F[Tampilkan pesan error]
+    F --> D
+    E -- Ya --> G{Role pengguna}
+    C -- Ya --> G
+
+    %% Alur Siswa
+    G -- Siswa --> H[Dashboard Siswa]
+    H --> I[Buat Aspirasi]
+    I --> J[Isi form: judul, deskripsi, lokasi, kategori, foto]
+    J --> K{Data valid?}
+    K -- Tidak --> L[Tampilkan error validasi]
+    L --> J
+    K -- Ya --> M[Simpan aspirasi<br/>status: diajukan]
+    M --> N[Lihat detail aspirasi]
+    N --> O[Lihat timeline feedback]
+    O --> P{Logout?}
+    P -- Tidak --> H
+    P -- Ya --> Z([End])
+
+    %% Alur Admin
+    G -- Admin --> Q[Dashboard Admin]
+    Q --> R[Kelola kategori & user]
+    Q --> S[Daftar aspirasi masuk]
+    S --> T[Pilih aspirasi]
+    T --> U[Beri feedback]
+    U --> V[Ubah status: diproses/selesai/ditolak]
+    V --> W{Status akhir?}
+    W -- Diproses --> S
+    W -- Selesai --> X[Masuk histori]
+    W -- Ditolak --> X
+    X --> Y{Logout?}
+    Y -- Tidak --> Q
+    Y -- Ya --> Z
