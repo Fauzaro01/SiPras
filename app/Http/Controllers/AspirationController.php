@@ -9,6 +9,7 @@ use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Mail;
 
 class AspirationController extends Controller
 {
@@ -168,6 +169,17 @@ class AspirationController extends Controller
         $validated = $request->validated();
 
         $aspiration->update($validated);
+
+        // F-04: Send email notification to the aspiration owner about status change using raw email
+        if ($aspiration->user && isset($aspiration->user->email)) {
+            \Illuminate\Support\Facades\Mail::raw(
+                "Status aspirasi Anda telah berubah menjadi: {$aspiration->status}",
+                function ($message) use ($aspiration) {
+                    $message->to($aspiration->user->email)
+                        ->subject('Status Aspirasi Anda Telah Diupdate');
+                }
+            );
+        }
 
         return redirect()->back()
             ->with('success', 'Status aspirasi berhasil diupdate!');

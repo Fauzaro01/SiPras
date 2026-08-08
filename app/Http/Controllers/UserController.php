@@ -41,9 +41,33 @@ class UserController extends Controller
         return view('users.index', compact('users', 'stats'));
     }
 
-    public function create()
+    // Show profile edit form for authenticated user
+    public function editProfile()
     {
-        return view('users.create');
+        $user = auth()->user();
+        return view('profile.edit', compact('user'));
+    }
+
+    // Update authenticated user's profile
+    public function updateProfile(UpdateUserProfileRequest $request)
+    {
+        $user = auth()->user();
+        $validated = $request->validated();
+
+        // Handle avatar upload if present
+        if ($request->hasFile('avatar')) {
+            $path = $request->file('avatar')->store('avatars', 'public');
+            $validated['avatar'] = $path;
+        }
+
+        // Update password if provided (already hashed in request)
+        if (empty($validated['password'])) {
+            unset($validated['password']);
+        }
+
+        $user->update($validated);
+
+        return redirect()->route('profile.edit')->with('success', 'Profil Anda berhasil diperbarui!');
     }
 
     public function store(StoreUserRequest $request)
