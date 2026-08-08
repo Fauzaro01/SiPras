@@ -4,8 +4,162 @@
 @source '../../storage/framework/views/*.php';
 @source '../**/*.blade.php';
 @source '../**/*.js';
+@source '../../app/**/*.php'; /* B-13: Scan controller/model files for Tailwind classes */
 
 @theme {
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
 }
+
+@variant dark (&:where(.dark, .dark *));
+
+/* ── F-08: Priority badge styles ── */
+.priority-rendah {
+    background-color: rgba(34, 197, 94, 0.1);
+    color: rgb(34, 197, 94);
+    border: 1px solid rgba(34, 197, 94, 0.2);
+}
+.priority-sedang {
+    background-color: rgba(234, 179, 8, 0.1);
+    color: rgb(202, 138, 4);
+    border: 1px solid rgba(234, 179, 8, 0.2);
+}
+.priority-tinggi {
+    background-color: rgba(249, 115, 22, 0.1);
+    color: rgb(234, 88, 12);
+    border: 1px solid rgba(249, 115, 22, 0.2);
+}
+.priority-mendesak {
+    background-color: rgba(239, 68, 68, 0.1);
+    color: rgb(220, 38, 38);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    animation: pulse-border 2s infinite;
+}
+
+@keyframes pulse-border {
+    0%, 100% { border-color: rgba(239, 68, 68, 0.2); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+    50% { border-color: rgba(239, 68, 68, 0.6); box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1); }
+}
+
+/* ── F-16: Premium Dark Mode Styles ── */
+.dark body {
+    background-color: #0f172a !important; /* Slate 900 */
+    color: #f1f5f9 !important; /* Slate 100 */
+}
+
+.dark aside#sidebar {
+    background-color: #1e293b !important; /* Slate 800 */
+    border-color: #334155 !important; /* Slate 700 */
+}
+
+.dark aside#sidebar .border-b,
+.dark aside#sidebar .border-t {
+    border-color: #334155 !important;
+}
+
+.dark .sidebar-link {
+    color: #94a3b8 !important; /* Slate 400 */
+}
+
+.dark .sidebar-link:hover, 
+.dark .sidebar-link.active {
+    background: #1e293b !important;
+    background-image: linear-gradient(to right, rgba(59, 130, 246, 0.08), transparent) !important;
+    color: #60a5fa !important; /* Blue 400 */
+}
+
+.dark .sidebar-link.active {
+    border-right-color: #3b82f6 !important;
+}
+
+.dark header {
+    background-color: rgba(30, 41, 59, 0.8) !important;
+    border-color: #334155 !important;
+}
+
+.dark .bg-white {
+    background-color: #1e293b !important;
+}
+
+.dark .border-gray-100,
+.dark .border-gray-200,
+.dark .border-gray-300,
+.dark .border-b,
+.dark .border-t,
+.dark .divide-gray-100 > :not([hidden]) ~ :not([hidden]) {
+    border-color: #334155 !important;
+}
+
+.dark .text-gray-900 {
+    color: #f8fafc !important;
+}
+
+.dark .text-gray-800 {
+    color: #f1f5f9 !important;
+}
+
+.dark .text-gray-700 {
+    color: #cbd5e1 !important;
+}
+
+.dark .text-gray-600 {
+    color: #94a3b8 !important;
+}
+
+.dark .text-gray-500 {
+    color: #64748b !important;
+}
+
+.dark .bg-gray-50 {
+    background-color: #0f172a !important;
+}
+
+.dark .bg-gray-100 {
+    background-color: #334155 !important;
+}
+
+.dark input, 
+.dark select, 
+.dark textarea {
+    background-color: #0f172a !important;
+    border-color: #475569 !important;
+    color: #f1f5f9 !important;
+}
+
+.dark input:focus, 
+.dark select:focus, 
+.dark textarea:focus {
+    border-color: #3b82f6 !important;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25) !important;
+}
+
+.dark .shadow-sm {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.15) !important;
+}
+
+.dark table tbody tr:hover td {
+    background-color: #334155 !important;
+}
+
+/* ── Dark Mode overrides for priority badges ── */
+.dark .priority-rendah {
+    background-color: rgba(34, 197, 94, 0.15) !important;
+    color: rgb(74, 222, 128) !important;
+    border-color: rgba(34, 197, 94, 0.3) !important;
+}
+.dark .priority-sedang {
+    background-color: rgba(234, 179, 8, 0.15) !important;
+    color: rgb(250, 204, 21) !important;
+    border-color: rgba(234, 179, 8, 0.3) !important;
+}
+.dark .priority-tinggi {
+    background-color: rgba(249, 115, 22, 0.15) !important;
+    color: rgb(251, 146, 60) !important;
+    border-color: rgba(249, 115, 22, 0.3) !important;
+}
+.dark .priority-mendesak {
+    background-color: rgba(239, 68, 68, 0.15) !important;
+    color: rgb(248, 113, 113) !important;
+    border-color: rgba(239, 68, 68, 0.4) !important;
+}
+

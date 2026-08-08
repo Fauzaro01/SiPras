@@ -128,6 +128,7 @@
                                 <th class="text-left px-3 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider dt-col-hide-md">Pelapor</th>
                             @endif
                             <th class="text-left px-3 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider dt-col-hide-sm">Lokasi</th>
+                            <th class="text-left px-3 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider dt-col-hide-sm">Prioritas</th>
                             <th class="text-left px-3 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Status</th>
                             <th class="text-left px-3 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider dt-col-hide-md">Feedback</th>
                             <th class="text-left px-3 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider dt-col-hide-sm">Tanggal</th>
@@ -148,6 +149,11 @@
                                     </td>
                                 @endif
                                 <td class="px-3 py-3.5 text-gray-600 dt-col-hide-sm">{{ $aspiration->lokasi }}</td>
+                                <td class="px-3 py-3.5 dt-col-hide-sm">
+                                    <span class="inline-flex px-2.5 py-0.5 rounded-full text-xs font-semibold {{ $aspiration->priority_color }}">
+                                        {{ $aspiration->priority_label }}
+                                    </span>
+                                </td>
                                 <td class="px-3 py-3.5">
                                     <span class="inline-flex px-2.5 py-0.5 rounded-full text-xs font-semibold {{ $aspiration->status_color }}">
                                         {{ $aspiration->status_label }}

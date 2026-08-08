@@ -20,8 +20,16 @@
             border-right: 3px solid #2563eb;
         }
     </style>
+    <script>
+        // Check local storage or media query for dark mode preference
+        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    </script>
 </head>
-<body class="bg-gray-50 min-h-screen">
+<body class="bg-gray-50 min-h-screen text-gray-800">
 
     {{-- Mobile Overlay --}}
     <div id="sidebarOverlay" class="fixed inset-0 bg-black/50 z-40 lg:hidden hidden" onclick="toggleSidebar()"></div>
@@ -52,19 +60,37 @@
                 Dashboard
             </a>
 
-            <a href="{{ route('aspirations.index') }}" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-600 {{ request()->routeIs('aspirations.index', 'aspirations.create', 'aspirations.show', 'aspirations.edit') ? 'active' : '' }}">
-                <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                </svg>
-                Aspirasi
+            <a href="{{ route('aspirations.index') }}" class="sidebar-link flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium text-gray-600 {{ request()->routeIs('aspirations.index', 'aspirations.create', 'aspirations.show', 'aspirations.edit') ? 'active' : '' }}">
+                <div class="flex items-center gap-3">
+                    <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                    <span>Aspirasi</span>
+                </div>
+                @if(Auth::user()->isAdmin() && isset($sidebarBadges['pending_aspirations']) && $sidebarBadges['pending_aspirations'] > 0)
+                    <span class="bg-yellow-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full flex-shrink-0 animate-pulse">
+                        {{ $sidebarBadges['pending_aspirations'] }}
+                    </span>
+                @elseif(Auth::user()->isSiswa() && isset($sidebarBadges['active_aspirations']) && $sidebarBadges['active_aspirations'] > 0)
+                    <span class="bg-blue-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full flex-shrink-0">
+                        {{ $sidebarBadges['active_aspirations'] }}
+                    </span>
+                @endif
             </a>
 
             @if(Auth::user()->isSiswa())
-                <a href="{{ route('aspirations.histori') }}" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-600 {{ request()->routeIs('aspirations.histori') ? 'active' : '' }}">
-                    <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                    </svg>
-                    Histori Aspirasi
+                <a href="{{ route('aspirations.histori') }}" class="sidebar-link flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium text-gray-600 {{ request()->routeIs('aspirations.histori') ? 'active' : '' }}">
+                    <div class="flex items-center gap-3">
+                        <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        <span>Histori Aspirasi</span>
+                    </div>
+                    @if(isset($sidebarBadges['history_aspirations']) && $sidebarBadges['history_aspirations'] > 0)
+                        <span class="bg-green-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full flex-shrink-0">
+                            {{ $sidebarBadges['history_aspirations'] }}
+                        </span>
+                    @endif
                 </a>
             @endif
 
@@ -135,12 +161,37 @@
 
                 {{-- Page title --}}
                 <h2 class="text-lg font-bold text-gray-800 hidden lg:block">@yield('page-title', 'Dashboard')</h2>
+
+                {{-- Global Search Bar (F-06) --}}
+                <div class="hidden md:block flex-1 max-w-xs lg:max-w-md mx-6">
+                    <form action="{{ route('search') }}" method="GET" class="relative">
+                        <input type="text" name="q" value="{{ request('q') }}" placeholder="Cari aspirasi, pelapor, kategori..." 
+                            class="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg text-xs focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 bg-gray-50 focus:bg-white transition-all duration-200">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <svg class="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                            </svg>
+                        </div>
+                    </form>
+                </div>
                 
                 {{-- Mobile logo --}}
                 <span class="text-lg font-bold text-blue-600 lg:hidden">SiPras</span>
 
                 {{-- Right side --}}
                 <div class="flex items-center gap-3">
+                    <!-- Dark Mode Toggle Button (F-16) -->
+                    <button id="theme-toggle" type="button" class="p-2 rounded-lg text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800 transition-colors duration-200" title="Ubah Tema">
+                        <!-- Sun Icon (for dark mode active) -->
+                        <svg id="theme-toggle-light-icon" class="hidden w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707m12.728 12.728A9 9 0 115.636 5.636m12.728 12.728L12 12"/>
+                        </svg>
+                        <!-- Moon Icon (for light mode active) -->
+                        <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+                        </svg>
+                    </button>
+
                     <span class="hidden sm:inline-block text-sm text-gray-500">
                         {{ Auth::user()->name }}
                     </span>
@@ -207,6 +258,31 @@
                     form.submit();
                 }
             });
+        });
+
+        // ─── Dark Mode Toggle Handler (F-16) ───
+        var themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+        var themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+
+        if (document.documentElement.classList.contains('dark')) {
+            themeToggleLightIcon.classList.remove('hidden');
+        } else {
+            themeToggleDarkIcon.classList.remove('hidden');
+        }
+
+        var themeToggleBtn = document.getElementById('theme-toggle');
+
+        themeToggleBtn.addEventListener('click', function() {
+            themeToggleDarkIcon.classList.toggle('hidden');
+            themeToggleLightIcon.classList.toggle('hidden');
+
+            if (document.documentElement.classList.contains('dark')) {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+            } else {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+            }
         });
     </script>
     @stack('scripts')
