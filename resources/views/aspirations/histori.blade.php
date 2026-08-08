@@ -61,7 +61,7 @@
                 <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
             </div>
             <div>
-                <p class="text-2xl font-bold text-gray-900">{{ $aspirations->where('status', 'selesai')->count() }}</p>
+                <p class="text-2xl font-bold text-gray-900">{{ $stats['selesai'] }}</p>
                 <p class="text-xs text-gray-500">Selesai</p>
             </div>
         </div>
@@ -70,19 +70,59 @@
                 <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
             </div>
             <div>
-                <p class="text-2xl font-bold text-gray-900">{{ $aspirations->where('status', 'ditolak')->count() }}</p>
+                <p class="text-2xl font-bold text-gray-900">{{ $stats['ditolak'] }}</p>
                 <p class="text-xs text-gray-500">Ditolak</p>
             </div>
         </div>
     </div>
 
+    <!-- Filter & Search Form -->
+    <form method="GET" action="{{ route('aspirations.histori') }}" class="bg-white p-4 rounded-xl border border-gray-100 shadow-sm flex flex-col md:flex-row gap-4 items-end mb-6">
+        <div class="flex-1 w-full">
+            <label for="search" class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Cari Histori</label>
+            <div class="relative">
+                <input type="text" name="search" id="search" value="{{ request('search') }}" placeholder="Cari judul, lokasi, atau nama siswa..." class="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-sm">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                </div>
+            </div>
+        </div>
+        <div class="w-full md:w-48">
+            <label for="category_id" class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Kategori</label>
+            <select name="category_id" id="category_id" class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-sm">
+                <option value="">Semua Kategori</option>
+                @foreach($categories as $cat)
+                    <option value="{{ $cat->id }}" {{ request('category_id') == $cat->id ? 'selected' : '' }}>{{ $cat->nama }}</option>
+                @endforeach
+            </select>
+        </div>
+        <div class="w-full md:w-48">
+            <label for="status" class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Status</label>
+            <select name="status" id="status" class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-sm">
+                <option value="">Semua Status</option>
+                <option value="selesai" {{ request('status') == 'selesai' ? 'selected' : '' }}>Selesai</option>
+                <option value="ditolak" {{ request('status') == 'ditolak' ? 'selected' : '' }}>Ditolak</option>
+            </select>
+        </div>
+        <div class="flex gap-2 w-full md:w-auto">
+            <button type="submit" class="flex-1 md:flex-none bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg font-semibold text-sm transition shadow-sm">
+                Filter
+            </button>
+            @if(request()->anyFilled(['search', 'category_id', 'status']))
+                <a href="{{ route('aspirations.histori') }}" class="flex-1 md:flex-none bg-gray-100 hover:bg-gray-200 text-gray-700 px-5 py-2 rounded-lg font-semibold text-sm transition text-center">
+                    Reset
+                </a>
+            @endif
+        </div>
+    </form>
+
     <!-- Table Card -->
     <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
         @if($aspirations->count() > 0)
             <div class="p-4 sm:p-6">
-                <table id="historiTable" class="w-full text-sm">
+                <table class="w-full text-sm">
                     <thead>
-                        <tr>
+                        <tr class="border-b-2 border-gray-100">
                             <th class="text-left px-3 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Judul & Kategori</th>
                             @if(Auth::user()->isAdmin())
                                 <th class="text-left px-3 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider dt-col-hide-md">Pelapor</th>
@@ -94,9 +134,9 @@
                             <th class="text-center px-3 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Aksi</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="divide-y divide-gray-100">
                         @foreach($aspirations as $aspiration)
-                            <tr>
+                            <tr class="hover:bg-gray-50/50 transition">
                                 <td class="px-3 py-3.5">
                                     <div class="font-medium text-gray-800">{{ $aspiration->judul }}</div>
                                     <div class="text-xs text-gray-400 mt-0.5">{{ $aspiration->category->nama ?? '-' }}</div>
@@ -124,7 +164,7 @@
                                         <span class="text-gray-300 text-xs">—</span>
                                     @endif
                                 </td>
-                                <td class="px-3 py-3.5 text-gray-500 dt-col-hide-sm" data-order="{{ $aspiration->updated_at->format('Y-m-d') }}">
+                                <td class="px-3 py-3.5 text-gray-500 dt-col-hide-sm">
                                     {{ $aspiration->updated_at->format('d M Y') }}
                                 </td>
                                 <td class="px-3 py-3.5 text-center">
@@ -140,6 +180,11 @@
                         @endforeach
                     </tbody>
                 </table>
+
+                <!-- Pagination Links -->
+                <div class="mt-6">
+                    {{ $aspirations->links() }}
+                </div>
             </div>
         @else
             <div class="text-center py-16 px-4">
@@ -149,43 +194,14 @@
                     </svg>
                 </div>
                 <p class="text-gray-600 font-semibold">Belum ada histori aspirasi</p>
-                <p class="text-gray-400 text-sm mt-1">Aspirasi yang sudah selesai atau ditolak akan muncul di sini</p>
-                <a href="{{ route('aspirations.index') }}" class="mt-5 inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg text-sm font-semibold transition">
-                    @if(Auth::user()->isAdmin()) Lihat Daftar Aspirasi @else Lihat Aspirasi Aktif @endif
-                </a>
+                <p class="text-gray-400 text-sm mt-1">Aspirasi tidak ditemukan atau belum ada yang selesai/ditolak</p>
+                @if(!request()->anyFilled(['search', 'category_id', 'status']))
+                    <a href="{{ route('aspirations.index') }}" class="mt-5 inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg text-sm font-semibold transition">
+                        @if(Auth::user()->isAdmin()) Lihat Daftar Aspirasi @else Lihat Aspirasi Aktif @endif
+                    </a>
+                @endif
             </div>
         @endif
     </div>
 </div>
 @endsection
-
-@push('scripts')
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
-<script>
-    $(document).ready(function() {
-        if ($('#historiTable').length) {
-            $('#historiTable').DataTable({
-                pageLength: 10,
-                order: [[{{ Auth::user()->isAdmin() ? '5' : '4' }}, 'desc']],
-                language: {
-                    search: '',
-                    lengthMenu: '_MENU_ per halaman',
-                    info: 'Menampilkan _START_–_END_ dari _TOTAL_ data',
-                    infoEmpty: 'Tidak ada data',
-                    infoFiltered: '(disaring dari _MAX_ data)',
-                    paginate: { first: '«', last: '»', next: '›', previous: '‹' },
-                    zeroRecords: `<div style="display:flex;flex-direction:column;align-items:center;padding:3rem 1.5rem;"><div style="width:60px;height:60px;border-radius:9999px;background:#eff6ff;display:flex;align-items:center;justify-content:center;margin-bottom:1rem;"><svg style="width:28px;height:28px;" fill="none" stroke="#60a5fa" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg></div><p style="font-weight:600;color:#1f2937;margin:0;">Tidak ada hasil ditemukan</p><p style="color:#9ca3af;font-size:.8125rem;margin:.25rem 0 0;">Coba kata kunci yang berbeda</p></div>`,
-                },
-                dom: '<"flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-5"lf>rtip',
-                initComplete: function() {
-                    const $input = $('.dataTables_filter input');
-                    $input.wrap('<div class="dt-search-wrap"></div>');
-                    $input.before(`<svg class="dt-search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>`);
-                    $input.attr('placeholder', 'Cari histori...');
-                }
-            });
-        }
-    });
-</script>
-@endpush

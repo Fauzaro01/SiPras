@@ -71,7 +71,7 @@
                         id="password"
                         class="w-full px-4 py-2.5 border rounded-lg text-sm pr-11 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition
                             {{ $errors->has('password') ? 'border-red-400 bg-red-50' : 'border-gray-300' }}"
-                        placeholder="Minimal 6 karakter"
+                        placeholder="Minimal 8 karakter"
                         required
                     >
                     <button type="button" onclick="togglePassword('password', this)" class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600 transition">
@@ -117,7 +117,7 @@
                 <svg class="w-4 h-4 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                 </svg>
-                <span>Password minimal 6 karakter. Gunakan kombinasi huruf, angka, dan simbol untuk keamanan yang lebih baik.</span>
+                <span>Password minimal 8 karakter. Gunakan kombinasi huruf, angka, dan simbol untuk keamanan yang lebih baik.</span>
             </div>
 
             <!-- Buttons -->

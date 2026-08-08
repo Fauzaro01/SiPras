@@ -24,11 +24,11 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
-            'name'           => fake()->name(),
-            'role'           => 'siswa',
-            'nis'            => fake()->unique()->numerify('######'),
-            'kelas'          => fake()->randomElement(['X-1', 'X-2', 'X-3', 'XI-1', 'XI-2', 'XII-1']),
-            'password'       => static::$password ??= Hash::make('password'),
+            'name' => fake()->name(),
+            'role' => 'siswa',
+            'nis' => fake()->unique()->numerify('######'),
+            'kelas' => fake()->randomElement(['X-1', 'X-2', 'X-3', 'XI-1', 'XI-2', 'XII-1']),
+            'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
         ];
     }
@@ -39,10 +39,10 @@ class UserFactory extends Factory
     public function admin(): static
     {
         return $this->state(fn (array $attributes) => [
-            'role'     => 'admin',
+            'role' => 'admin',
             'username' => fake()->unique()->userName(),
-            'nis'      => null,
-            'kelas'    => null,
+            'nis' => null,
+            'kelas' => null,
         ]);
     }
 
@@ -52,8 +52,8 @@ class UserFactory extends Factory
     public function siswa(): static
     {
         return $this->state(fn (array $attributes) => [
-            'role'  => 'siswa',
-            'nis'   => fake()->unique()->numerify('######'),
+            'role' => 'siswa',
+            'nis' => fake()->unique()->numerify('######'),
             'kelas' => fake()->randomElement(['X-1', 'X-2', 'X-3', 'XI-1', 'XI-2', 'XII-1']),
         ]);
     }

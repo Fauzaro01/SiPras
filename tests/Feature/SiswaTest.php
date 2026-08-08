@@ -18,13 +18,13 @@ use Illuminate\Support\Facades\Storage;
 
 test('A.1 siswa dapat login dengan NIS dan password yang valid', function () {
     $siswa = User::factory()->siswa()->create([
-        'nis'      => '12345',
+        'nis' => '12345',
         'password' => Hash::make('password123'),
     ]);
 
     $response = $this->post('/login', [
         'identifier' => '12345',
-        'password'   => 'password123',
+        'password' => 'password123',
     ]);
 
     $response->assertRedirect('/dashboard');
@@ -36,7 +36,7 @@ test('A.1 siswa tidak bisa login dengan password salah', function () {
 
     $response = $this->post('/login', [
         'identifier' => '12345',
-        'password'   => 'password-salah',
+        'password' => 'password-salah',
     ]);
 
     $response->assertSessionHasErrors('identifier');
@@ -46,7 +46,7 @@ test('A.1 siswa tidak bisa login dengan password salah', function () {
 test('A.1 siswa tidak bisa login dengan NIS yang tidak terdaftar', function () {
     $response = $this->post('/login', [
         'identifier' => '99999',
-        'password'   => 'apapun',
+        'password' => 'apapun',
     ]);
 
     $response->assertSessionHasErrors('identifier');
@@ -83,23 +83,23 @@ test('A.2 siswa dapat melihat halaman form input aspirasi', function () {
 
 test('A.2 siswa dapat menyimpan aspirasi baru dengan foto', function () {
     Storage::fake('public');
-    $siswa    = User::factory()->siswa()->create();
+    $siswa = User::factory()->siswa()->create();
     $category = Category::factory()->create();
 
     $response = $this->actingAs($siswa)->post(route('aspirations.store'), [
-        'judul'       => 'Kerusakan Meja Kelas X-1',
-        'deskripsi'   => 'Beberapa meja di kelas X-1 rusak dan perlu diperbaiki segera.',
+        'judul' => 'Kerusakan Meja Kelas X-1',
+        'deskripsi' => 'Beberapa meja di kelas X-1 rusak dan perlu diperbaiki segera.',
         'category_id' => $category->id,
-        'lokasi'      => 'Gedung A Lantai 2 Kelas X-1',
-        'bukti_foto'  => UploadedFile::fake()->create('kerusakan.jpg', 100, 'image/jpeg'),
+        'lokasi' => 'Gedung A Lantai 2 Kelas X-1',
+        'bukti_foto' => UploadedFile::fake()->create('kerusakan.jpg', 100, 'image/jpeg'),
     ]);
 
     $response->assertRedirect(route('aspirations.index'));
     $this->assertDatabaseHas('aspirations', [
-        'user_id'     => $siswa->id,
-        'judul'       => 'Kerusakan Meja Kelas X-1',
+        'user_id' => $siswa->id,
+        'judul' => 'Kerusakan Meja Kelas X-1',
         'category_id' => $category->id,
-        'status'      => 'diajukan',
+        'status' => 'diajukan',
     ]);
 });
 
@@ -112,7 +112,7 @@ test('A.2 aspirasi gagal disimpan jika field wajib kosong', function () {
 });
 
 test('A.2 form input aspirasi menampilkan daftar kategori', function () {
-    $siswa    = User::factory()->siswa()->create();
+    $siswa = User::factory()->siswa()->create();
     $category = Category::factory()->create(['nama' => 'Ruang Kelas']);
 
     $response = $this->actingAs($siswa)->get(route('aspirations.create'));
@@ -162,7 +162,7 @@ test('A.3 siswa tidak melihat aspirasi yang sudah selesai atau ditolak di daftar
 });
 
 test('A.3 siswa dapat menghapus aspirasi miliknya', function () {
-    $siswa      = User::factory()->siswa()->create();
+    $siswa = User::factory()->siswa()->create();
     $aspiration = Aspiration::factory()->create(['user_id' => $siswa->id]);
 
     $response = $this->actingAs($siswa)->delete(route('aspirations.destroy', $aspiration));
@@ -172,8 +172,8 @@ test('A.3 siswa dapat menghapus aspirasi miliknya', function () {
 });
 
 test('A.3 siswa tidak bisa menghapus aspirasi milik siswa lain', function () {
-    $siswa1     = User::factory()->siswa()->create();
-    $siswa2     = User::factory()->siswa()->create();
+    $siswa1 = User::factory()->siswa()->create();
+    $siswa2 = User::factory()->siswa()->create();
     $aspiration = Aspiration::factory()->create(['user_id' => $siswa2->id]);
 
     $response = $this->actingAs($siswa1)->delete(route('aspirations.destroy', $aspiration));
@@ -187,10 +187,10 @@ test('A.3 siswa tidak bisa menghapus aspirasi milik siswa lain', function () {
 // ----------------------------------------------------------
 
 test('A.4 siswa dapat melihat detail aspirasi miliknya', function () {
-    $siswa      = User::factory()->siswa()->create();
+    $siswa = User::factory()->siswa()->create();
     $aspiration = Aspiration::factory()->create([
         'user_id' => $siswa->id,
-        'judul'   => 'Detail Aspirasi Test',
+        'judul' => 'Detail Aspirasi Test',
     ]);
 
     $response = $this->actingAs($siswa)->get(route('aspirations.show', $aspiration));
@@ -201,8 +201,8 @@ test('A.4 siswa dapat melihat detail aspirasi miliknya', function () {
 });
 
 test('A.4 siswa tidak bisa melihat detail aspirasi milik siswa lain', function () {
-    $siswa1     = User::factory()->siswa()->create();
-    $siswa2     = User::factory()->siswa()->create();
+    $siswa1 = User::factory()->siswa()->create();
+    $siswa2 = User::factory()->siswa()->create();
     $aspiration = Aspiration::factory()->create(['user_id' => $siswa2->id]);
 
     $response = $this->actingAs($siswa1)->get(route('aspirations.show', $aspiration));
@@ -211,14 +211,14 @@ test('A.4 siswa tidak bisa melihat detail aspirasi milik siswa lain', function (
 });
 
 test('A.4 siswa dapat melihat umpan balik (feedback) dari admin di halaman detail', function () {
-    $admin      = User::factory()->admin()->create();
-    $siswa      = User::factory()->siswa()->create();
+    $admin = User::factory()->admin()->create();
+    $siswa = User::factory()->siswa()->create();
     $aspiration = Aspiration::factory()->create(['user_id' => $siswa->id]);
 
     Feedback::create([
         'aspiration_id' => $aspiration->id,
-        'user_id'       => $admin->id,
-        'pesan'         => 'Tim kami akan segera menindaklanjuti laporan ini.',
+        'user_id' => $admin->id,
+        'pesan' => 'Tim kami akan segera menindaklanjuti laporan ini.',
     ]);
 
     $response = $this->actingAs($siswa)->get(route('aspirations.show', $aspiration));
@@ -228,7 +228,7 @@ test('A.4 siswa dapat melihat umpan balik (feedback) dari admin di halaman detai
 });
 
 test('A.4 siswa dapat melihat status/progress aspirasi di halaman detail', function () {
-    $siswa      = User::factory()->siswa()->create();
+    $siswa = User::factory()->siswa()->create();
     $aspiration = Aspiration::factory()->diproses()->create(['user_id' => $siswa->id]);
 
     $response = $this->actingAs($siswa)->get(route('aspirations.show', $aspiration));
@@ -239,8 +239,8 @@ test('A.4 siswa dapat melihat status/progress aspirasi di halaman detail', funct
 });
 
 test('A.4 halaman detail menampilkan multiple feedback dengan urutan terbaru', function () {
-    $admin      = User::factory()->admin()->create();
-    $siswa      = User::factory()->siswa()->create();
+    $admin = User::factory()->admin()->create();
+    $siswa = User::factory()->siswa()->create();
     $aspiration = Aspiration::factory()->create(['user_id' => $siswa->id]);
 
     Feedback::create(['aspiration_id' => $aspiration->id, 'user_id' => $admin->id, 'pesan' => 'Feedback pertama.']);
@@ -271,8 +271,8 @@ test('A.5 siswa dapat mengganti password dengan password lama yang benar', funct
     ]);
 
     $response = $this->actingAs($siswa)->post(route('password.update'), [
-        'current_password'      => 'passwordLama123',
-        'password'              => 'passwordBaru456',
+        'current_password' => 'passwordLama123',
+        'password' => 'passwordBaru456',
         'password_confirmation' => 'passwordBaru456',
     ]);
 
@@ -286,8 +286,8 @@ test('A.5 ganti password gagal jika password lama salah', function () {
     ]);
 
     $response = $this->actingAs($siswa)->post(route('password.update'), [
-        'current_password'      => 'passwordSalah999',
-        'password'              => 'passwordBaru456',
+        'current_password' => 'passwordSalah999',
+        'password' => 'passwordBaru456',
         'password_confirmation' => 'passwordBaru456',
     ]);
 
@@ -301,8 +301,8 @@ test('A.5 ganti password gagal jika konfirmasi tidak cocok', function () {
     ]);
 
     $response = $this->actingAs($siswa)->post(route('password.update'), [
-        'current_password'      => 'passwordLama123',
-        'password'              => 'passwordBaru456',
+        'current_password' => 'passwordLama123',
+        'password' => 'passwordBaru456',
         'password_confirmation' => 'tidakcocok999',
     ]);
 
@@ -315,8 +315,8 @@ test('A.5 ganti password gagal jika password baru kurang dari 6 karakter', funct
     ]);
 
     $response = $this->actingAs($siswa)->post(route('password.update'), [
-        'current_password'      => 'passwordLama123',
-        'password'              => 'abc',
+        'current_password' => 'passwordLama123',
+        'password' => 'abc',
         'password_confirmation' => 'abc',
     ]);
 

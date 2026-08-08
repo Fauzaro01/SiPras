@@ -197,13 +197,55 @@
         @endif
     </div>
 
-    <!-- DataTable Card -->
+    <!-- Filter & Search Form -->
+    <form method="GET" action="{{ route('aspirations.index') }}" class="bg-white p-4 rounded-xl border border-gray-100 shadow-sm flex flex-col md:flex-row gap-4 items-end mb-6">
+        <div class="flex-1 w-full">
+            <label for="search" class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Cari Aspirasi</label>
+            <div class="relative">
+                <input type="text" name="search" id="search" value="{{ request('search') }}" placeholder="Cari judul, lokasi, atau nama siswa..." class="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-sm">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                </div>
+            </div>
+        </div>
+        <div class="w-full md:w-48">
+            <label for="category_id" class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Kategori</label>
+            <select name="category_id" id="category_id" class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-sm">
+                <option value="">Semua Kategori</option>
+                @foreach($categories as $cat)
+                    <option value="{{ $cat->id }}" {{ request('category_id') == $cat->id ? 'selected' : '' }}>{{ $cat->nama }}</option>
+                @endforeach
+            </select>
+        </div>
+        @if(Auth::user()->isAdmin())
+        <div class="w-full md:w-48">
+            <label for="status" class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Status</label>
+            <select name="status" id="status" class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-sm">
+                <option value="">Semua Status</option>
+                <option value="diajukan" {{ request('status') == 'diajukan' ? 'selected' : '' }}>Diajukan</option>
+                <option value="diproses" {{ request('status') == 'diproses' ? 'selected' : '' }}>Diproses</option>
+            </select>
+        </div>
+        @endif
+        <div class="flex gap-2 w-full md:w-auto">
+            <button type="submit" class="flex-1 md:flex-none bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg font-semibold text-sm transition shadow-sm">
+                Filter
+            </button>
+            @if(request()->anyFilled(['search', 'category_id', 'status']))
+                <a href="{{ route('aspirations.index') }}" class="flex-1 md:flex-none bg-gray-100 hover:bg-gray-200 text-gray-700 px-5 py-2 rounded-lg font-semibold text-sm transition text-center">
+                    Reset
+                </a>
+            @endif
+        </div>
+    </form>
+
+    <!-- Table Card -->
     <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
         @if($aspirations->count() > 0)
             <div class="p-4 sm:p-6">
-                <table id="aspirationsTable" class="w-full text-sm">
+                <table class="w-full text-sm">
                     <thead>
-                        <tr>
+                        <tr class="border-b-2 border-gray-100">
                             <th class="text-left px-3 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Judul & Kategori</th>
                             @if(Auth::user()->isAdmin())
                                 <th class="text-left px-3 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider dt-col-hide-md">Pelapor</th>
@@ -214,9 +256,9 @@
                             <th class="text-center px-3 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Aksi</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="divide-y divide-gray-100">
                         @foreach($aspirations as $aspiration)
-                            <tr>
+                            <tr class="hover:bg-gray-50/50 transition">
                                 <td class="px-3 py-3.5">
                                     <div class="font-medium text-gray-800">{{ $aspiration->judul }}</div>
                                     <div class="text-xs text-gray-400 mt-0.5">{{ $aspiration->category->nama ?? '-' }}</div>
@@ -228,12 +270,12 @@
                                     </td>
                                 @endif
                                 <td class="px-3 py-3.5 text-gray-600 dt-col-hide-sm">{{ $aspiration->lokasi }}</td>
-                                <td class="px-3 py-3.5" @if(Auth::user()->isAdmin()) data-order="{{ $aspiration->status === 'diajukan' ? '0' : '1' }}" @endif>
+                                <td class="px-3 py-3.5">
                                     <span class="inline-flex px-2.5 py-0.5 rounded-full text-xs font-semibold {{ $aspiration->status_color }}">
                                         {{ $aspiration->status_label }}
                                     </span>
                                 </td>
-                                <td class="px-3 py-3.5 text-gray-500 dt-col-hide-sm" data-order="{{ $aspiration->created_at->format('Y-m-d') }}">
+                                <td class="px-3 py-3.5 text-gray-500 dt-col-hide-sm">
                                     {{ $aspiration->created_at->format('d M Y') }}
                                 </td>
                                 <td class="px-3 py-3.5 text-center">
@@ -249,6 +291,11 @@
                         @endforeach
                     </tbody>
                 </table>
+
+                <!-- Pagination Links -->
+                <div class="mt-6">
+                    {{ $aspirations->links() }}
+                </div>
             </div>
         @else
             <div class="text-center py-16 px-4">
@@ -256,8 +303,8 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                 </svg>
                 <p class="mt-4 text-gray-500 text-lg font-medium">Belum ada aspirasi</p>
-                <p class="text-gray-400 text-sm mt-1">Data aspirasi akan muncul di sini</p>
-                @if(Auth::user()->isSiswa())
+                <p class="text-gray-400 text-sm mt-1">Data aspirasi tidak ditemukan atau belum dibuat</p>
+                @if(Auth::user()->isSiswa() && !request()->anyFilled(['search', 'category_id', 'status']))
                     <a href="{{ route('aspirations.create') }}" class="mt-6 inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg font-semibold transition text-sm">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
@@ -271,49 +318,3 @@
 </div>
 @endsection
 
-@push('scripts')
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
-<script>
-    const emptyStateHTML = (icon, color, title, subtitle) => `
-        <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:3.5rem 1.5rem;">
-            <div style="width:64px;height:64px;border-radius:9999px;background:${color};display:flex;align-items:center;justify-content:center;margin-bottom:1rem;">
-                ${icon}
-            </div>
-            <p style="color:#1f2937;font-weight:600;font-size:0.9375rem;margin:0;">${title}</p>
-            <p style="color:#9ca3af;font-size:0.8125rem;margin:0.35rem 0 0;">${subtitle}</p>
-        </div>
-    `;
-
-    const searchIcon = `<svg style="width:28px;height:28px;" fill="none" stroke="#60a5fa" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>`;
-    const docIcon   = `<svg style="width:28px;height:28px;" fill="none" stroke="#d1d5db" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>`;
-
-    $(document).ready(function() {
-        if ($('#aspirationsTable').length) {
-            $('#aspirationsTable').DataTable({
-                pageLength: 10,
-                lengthMenu: [5, 10, 25, 50],
-                order: {{ Auth::user()->isAdmin() ? '[[3, "asc"], [4, "desc"]]' : '[[3, "desc"]]' }},
-                language: {
-                    search: '',
-                    lengthMenu: '_MENU_ per halaman',
-                    info: 'Menampilkan _START_–_END_ dari _TOTAL_ data',
-                    infoEmpty: 'Tidak ada data tersedia',
-                    infoFiltered: '(disaring dari _MAX_ data)',
-                    paginate: { first: '«', last: '»', next: '›', previous: '‹' },
-                    zeroRecords: emptyStateHTML(searchIcon, '#eff6ff', 'Tidak ada hasil ditemukan', 'Coba gunakan kata kunci yang berbeda'),
-                    emptyTable:  emptyStateHTML(docIcon,    '#f9fafb', 'Belum ada aspirasi', 'Data aspirasi akan muncul di sini'),
-                },
-                dom: '<"flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-5"lf>rtip',
-                initComplete: function() {
-                    // Inject search icon before the input
-                    const $input = $('.dataTables_filter input');
-                    $input.wrap('<div class="dt-search-wrap"></div>');
-                    $input.before(`<svg class="dt-search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>`);
-                    $input.attr('placeholder', 'Cari aspirasi...');
-                }
-            });
-        }
-    });
-</script>
-@endpush

@@ -1,8 +1,8 @@
 {
     "$schema": "https://getcomposer.org/schema.json",
-    "name": "laravel/laravel",
+    "name": "fauzaro01/sipras",
     "type": "project",
-    "description": "The skeleton application for the Laravel framework.",
+    "description": "Sistem Prasarana Sekolah - Aplikasi web untuk mengelola dan merespons aspirasi/pengaduan prasarana sekolah.",
     "keywords": [
         "laravel",
         "framework"

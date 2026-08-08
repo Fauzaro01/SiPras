@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use App\Models\User;
 
 class AuthController extends Controller
 {
@@ -34,7 +34,7 @@ class AuthController extends Controller
             $request->session()->regenerate();
 
             return redirect()->intended('/dashboard')
-                ->with('success', 'Selamat datang, ' . $user->name);
+                ->with('success', 'Selamat datang, '.$user->name);
         }
 
         return back()->withErrors([
@@ -60,10 +60,10 @@ class AuthController extends Controller
     {
         $request->validate([
             'current_password' => 'required|string',
-            'password'         => 'required|string|min:6|confirmed',
+            'password' => 'required|string|min:8|confirmed',
         ]);
 
-        if (!Hash::check($request->current_password, Auth::user()->password)) {
+        if (! Hash::check($request->current_password, Auth::user()->password)) {
             return back()->withErrors(['current_password' => 'Password saat ini tidak sesuai.'])->withInput();
         }
 

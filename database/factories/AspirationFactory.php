@@ -17,13 +17,13 @@ class AspirationFactory extends Factory
     public function definition(): array
     {
         return [
-            'user_id'     => User::factory()->siswa(),
+            'user_id' => User::factory()->siswa(),
             'category_id' => Category::factory(),
-            'judul'       => fake()->sentence(5),
-            'deskripsi'   => fake()->paragraph(),
-            'lokasi'      => 'Gedung ' . fake()->randomLetter() . ' Lantai ' . fake()->numberBetween(1, 3),
-            'status'      => 'diajukan',
-            'bukti_foto'  => null,
+            'judul' => fake()->sentence(5),
+            'deskripsi' => fake()->paragraph(),
+            'lokasi' => 'Gedung '.fake()->randomLetter().' Lantai '.fake()->numberBetween(1, 3),
+            'status' => 'diajukan',
+            'bukti_foto' => null,
         ];
     }
 

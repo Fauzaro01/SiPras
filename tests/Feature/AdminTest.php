@@ -4,9 +4,7 @@ use App\Models\Aspiration;
 use App\Models\Category;
 use App\Models\Feedback;
 use App\Models\User;
-use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Storage;
 
 // ==========================================================
 // B. PERAN ADMIN (STAF SARANA DAN PRASARANA)
@@ -24,7 +22,7 @@ test('B.1 admin dapat login dengan username dan password yang valid', function (
 
     $response = $this->post('/login', [
         'identifier' => 'admintest',
-        'password'   => 'admin123',
+        'password' => 'admin123',
     ]);
 
     $response->assertRedirect('/dashboard');
@@ -36,7 +34,7 @@ test('B.1 admin tidak bisa login dengan password salah', function () {
 
     $response = $this->post('/login', [
         'identifier' => 'admintest',
-        'password'   => 'salah123',
+        'password' => 'salah123',
     ]);
 
     $response->assertSessionHasErrors('identifier');
@@ -46,7 +44,7 @@ test('B.1 admin tidak bisa login dengan password salah', function () {
 test('B.1 admin tidak bisa login dengan username yang tidak terdaftar', function () {
     $response = $this->post('/login', [
         'identifier' => 'tidakada',
-        'password'   => 'apapun',
+        'password' => 'apapun',
     ]);
 
     $response->assertSessionHasErrors('identifier');
@@ -87,7 +85,7 @@ test('B.2 daftar aspirasi admin hanya menampilkan status diajukan dan diproses',
 });
 
 test('B.2 admin dapat melihat semua aspirasi dari semua siswa', function () {
-    $admin  = User::factory()->admin()->create();
+    $admin = User::factory()->admin()->create();
     $siswa1 = User::factory()->siswa()->create();
     $siswa2 = User::factory()->siswa()->create();
 
@@ -117,8 +115,8 @@ test('B.2 daftar aspirasi admin memprioritaskan yang diajukan terlebih dahulu', 
 // ----------------------------------------------------------
 
 test('B.3 admin dapat menambahkan feedback pada aspirasi', function () {
-    $admin      = User::factory()->admin()->create();
-    $siswa      = User::factory()->siswa()->create();
+    $admin = User::factory()->admin()->create();
+    $siswa = User::factory()->siswa()->create();
     $aspiration = Aspiration::factory()->create(['user_id' => $siswa->id]);
 
     $response = $this->actingAs($admin)->post(route('feedbacks.store', $aspiration), [
@@ -128,13 +126,13 @@ test('B.3 admin dapat menambahkan feedback pada aspirasi', function () {
     $response->assertRedirect();
     $this->assertDatabaseHas('feedbacks', [
         'aspiration_id' => $aspiration->id,
-        'user_id'       => $admin->id,
-        'pesan'         => 'Laporan sudah kami terima dan akan segera ditindaklanjuti.',
+        'user_id' => $admin->id,
+        'pesan' => 'Laporan sudah kami terima dan akan segera ditindaklanjuti.',
     ]);
 });
 
 test('B.3 admin dapat menambahkan beberapa feedback pada satu aspirasi', function () {
-    $admin      = User::factory()->admin()->create();
+    $admin = User::factory()->admin()->create();
     $aspiration = Aspiration::factory()->create();
 
     $this->actingAs($admin)->post(route('feedbacks.store', $aspiration), ['pesan' => 'Feedback 1.']);
@@ -144,12 +142,12 @@ test('B.3 admin dapat menambahkan beberapa feedback pada satu aspirasi', functio
 });
 
 test('B.3 admin dapat menghapus feedback', function () {
-    $admin      = User::factory()->admin()->create();
+    $admin = User::factory()->admin()->create();
     $aspiration = Aspiration::factory()->create();
-    $feedback   = Feedback::create([
+    $feedback = Feedback::create([
         'aspiration_id' => $aspiration->id,
-        'user_id'       => $admin->id,
-        'pesan'         => 'Feedback yang akan dihapus.',
+        'user_id' => $admin->id,
+        'pesan' => 'Feedback yang akan dihapus.',
     ]);
 
     $response = $this->actingAs($admin)->delete(route('feedbacks.destroy', [$aspiration, $feedback]));
@@ -159,7 +157,7 @@ test('B.3 admin dapat menghapus feedback', function () {
 });
 
 test('B.3 siswa tidak dapat menambahkan feedback', function () {
-    $siswa      = User::factory()->siswa()->create();
+    $siswa = User::factory()->siswa()->create();
     $aspiration = Aspiration::factory()->create(['user_id' => $siswa->id]);
 
     $response = $this->actingAs($siswa)->post(route('feedbacks.store', $aspiration), [
@@ -171,7 +169,7 @@ test('B.3 siswa tidak dapat menambahkan feedback', function () {
 });
 
 test('B.3 feedback wajib diisi (tidak boleh kosong)', function () {
-    $admin      = User::factory()->admin()->create();
+    $admin = User::factory()->admin()->create();
     $aspiration = Aspiration::factory()->create();
 
     $response = $this->actingAs($admin)->post(route('feedbacks.store', $aspiration), ['pesan' => '']);
@@ -184,7 +182,7 @@ test('B.3 feedback wajib diisi (tidak boleh kosong)', function () {
 // ----------------------------------------------------------
 
 test('B.4 admin dapat mengubah status aspirasi ke diproses', function () {
-    $admin      = User::factory()->admin()->create();
+    $admin = User::factory()->admin()->create();
     $aspiration = Aspiration::factory()->diajukan()->create();
 
     $this->actingAs($admin)->post(route('aspirations.update-status', $aspiration), [
@@ -195,7 +193,7 @@ test('B.4 admin dapat mengubah status aspirasi ke diproses', function () {
 });
 
 test('B.4 admin dapat mengubah status aspirasi ke selesai', function () {
-    $admin      = User::factory()->admin()->create();
+    $admin = User::factory()->admin()->create();
     $aspiration = Aspiration::factory()->diproses()->create();
 
     $this->actingAs($admin)->post(route('aspirations.update-status', $aspiration), [
@@ -206,7 +204,7 @@ test('B.4 admin dapat mengubah status aspirasi ke selesai', function () {
 });
 
 test('B.4 admin dapat mengubah status aspirasi ke ditolak', function () {
-    $admin      = User::factory()->admin()->create();
+    $admin = User::factory()->admin()->create();
     $aspiration = Aspiration::factory()->diajukan()->create();
 
     $this->actingAs($admin)->post(route('aspirations.update-status', $aspiration), [
@@ -217,7 +215,7 @@ test('B.4 admin dapat mengubah status aspirasi ke ditolak', function () {
 });
 
 test('B.4 siswa tidak dapat mengubah status aspirasi', function () {
-    $siswa      = User::factory()->siswa()->create();
+    $siswa = User::factory()->siswa()->create();
     $aspiration = Aspiration::factory()->diajukan()->create(['user_id' => $siswa->id]);
 
     $response = $this->actingAs($siswa)->post(route('aspirations.update-status', $aspiration), [
@@ -229,7 +227,7 @@ test('B.4 siswa tidak dapat mengubah status aspirasi', function () {
 });
 
 test('B.4 status tidak valid akan divalidasi dan ditolak', function () {
-    $admin      = User::factory()->admin()->create();
+    $admin = User::factory()->admin()->create();
     $aspiration = Aspiration::factory()->create();
 
     $response = $this->actingAs($admin)->post(route('aspirations.update-status', $aspiration), [
@@ -253,7 +251,7 @@ test('B.5 admin dapat mengakses halaman histori aspirasi', function () {
 });
 
 test('B.5 histori aspirasi admin menampilkan semua aspirasi selesai dan ditolak dari semua siswa', function () {
-    $admin  = User::factory()->admin()->create();
+    $admin = User::factory()->admin()->create();
     $siswa1 = User::factory()->siswa()->create();
     $siswa2 = User::factory()->siswa()->create();
 
@@ -300,20 +298,20 @@ test('B.6 admin dapat menambahkan siswa baru', function () {
     $admin = User::factory()->admin()->create();
 
     $response = $this->actingAs($admin)->post(route('users.store'), [
-        'name'                  => 'Siswa Baru Tes',
-        'role'                  => 'siswa',
-        'nis'                   => '98765',
-        'kelas'                 => 'X-4',
-        'password'              => 'siswa123',
+        'name' => 'Siswa Baru Tes',
+        'role' => 'siswa',
+        'nis' => '98765',
+        'kelas' => 'X-4',
+        'password' => 'siswa123',
         'password_confirmation' => 'siswa123',
     ]);
 
     $response->assertRedirect(route('users.index'));
     $this->assertDatabaseHas('users', [
-        'name'  => 'Siswa Baru Tes',
-        'nis'   => '98765',
+        'name' => 'Siswa Baru Tes',
+        'nis' => '98765',
         'kelas' => 'X-4',
-        'role'  => 'siswa',
+        'role' => 'siswa',
     ]);
 });
 
@@ -321,18 +319,18 @@ test('B.6 admin dapat menambahkan admin baru', function () {
     $admin = User::factory()->admin()->create();
 
     $response = $this->actingAs($admin)->post(route('users.store'), [
-        'name'                  => 'Admin Baru Tes',
-        'role'                  => 'admin',
-        'username'              => 'adminbaru',
-        'password'              => 'admin123',
+        'name' => 'Admin Baru Tes',
+        'role' => 'admin',
+        'username' => 'adminbaru',
+        'password' => 'admin123',
         'password_confirmation' => 'admin123',
     ]);
 
     $response->assertRedirect(route('users.index'));
     $this->assertDatabaseHas('users', [
-        'name'     => 'Admin Baru Tes',
+        'name' => 'Admin Baru Tes',
         'username' => 'adminbaru',
-        'role'     => 'admin',
+        'role' => 'admin',
     ]);
 });
 
@@ -341,10 +339,10 @@ test('B.6 tambah siswa gagal jika NIS sudah dipakai', function () {
     User::factory()->siswa()->create(['nis' => '11111']);
 
     $response = $this->actingAs($admin)->post(route('users.store'), [
-        'name'                  => 'Siswa Duplikat',
-        'role'                  => 'siswa',
-        'nis'                   => '11111',
-        'password'              => 'password123',
+        'name' => 'Siswa Duplikat',
+        'role' => 'siswa',
+        'nis' => '11111',
+        'password' => 'password123',
         'password_confirmation' => 'password123',
     ]);
 
@@ -379,9 +377,9 @@ test('B.7 admin dapat mengedit data pengguna', function () {
     $siswa = User::factory()->siswa()->create(['kelas' => 'X-1']);
 
     $response = $this->actingAs($admin)->put(route('users.update', $siswa), [
-        'name'  => 'Nama Sudah Diubah',
+        'name' => 'Nama Sudah Diubah',
         'kelas' => 'XII-2',
-        'nis'   => $siswa->nis,
+        'nis' => $siswa->nis,
     ]);
 
     $response->assertRedirect(route('users.index'));
@@ -394,9 +392,9 @@ test('B.7 admin dapat mengganti password pengguna saat edit', function () {
     $siswa = User::factory()->siswa()->create();
 
     $this->actingAs($admin)->put(route('users.update', $siswa), [
-        'name'                  => $siswa->name,
-        'nis'                   => $siswa->nis,
-        'password'              => 'newpassword123',
+        'name' => $siswa->name,
+        'nis' => $siswa->nis,
+        'password' => 'newpassword123',
         'password_confirmation' => 'newpassword123',
     ]);
 
@@ -447,7 +445,7 @@ test('B.8 admin dapat menambahkan kategori baru', function () {
     $admin = User::factory()->admin()->create();
 
     $response = $this->actingAs($admin)->post(route('categories.store'), [
-        'nama'      => 'Fasilitas Olahraga',
+        'nama' => 'Fasilitas Olahraga',
         'deskripsi' => 'Aspirasi terkait fasilitas olahraga sekolah.',
     ]);
 
@@ -460,7 +458,7 @@ test('B.8 tambah kategori gagal jika nama sudah dipakai', function () {
     Category::factory()->create(['nama' => 'Ruang Kelas']);
 
     $response = $this->actingAs($admin)->post(route('categories.store'), [
-        'nama'      => 'Ruang Kelas',
+        'nama' => 'Ruang Kelas',
         'deskripsi' => 'Duplikat.',
     ]);
 
@@ -471,7 +469,7 @@ test('B.8 tambah kategori gagal jika nama kosong', function () {
     $admin = User::factory()->admin()->create();
 
     $response = $this->actingAs($admin)->post(route('categories.store'), [
-        'nama'      => '',
+        'nama' => '',
         'deskripsi' => 'Deskripsi ada.',
     ]);
 
@@ -504,11 +502,11 @@ test('B.9 admin dapat melihat daftar kategori', function () {
 });
 
 test('B.9 admin dapat mengubah data kategori', function () {
-    $admin    = User::factory()->admin()->create();
+    $admin = User::factory()->admin()->create();
     $category = Category::factory()->create(['nama' => 'Kategori Lama']);
 
     $response = $this->actingAs($admin)->put(route('categories.update', $category), [
-        'nama'      => 'Kategori Baru Diperbarui',
+        'nama' => 'Kategori Baru Diperbarui',
         'deskripsi' => 'Deskripsi baru.',
     ]);
 
@@ -517,7 +515,7 @@ test('B.9 admin dapat mengubah data kategori', function () {
 });
 
 test('B.9 admin dapat menghapus kategori yang tidak memiliki aspirasi', function () {
-    $admin    = User::factory()->admin()->create();
+    $admin = User::factory()->admin()->create();
     $category = Category::factory()->create();
 
     $response = $this->actingAs($admin)->delete(route('categories.destroy', $category));
@@ -527,8 +525,8 @@ test('B.9 admin dapat menghapus kategori yang tidak memiliki aspirasi', function
 });
 
 test('B.9 admin tidak dapat menghapus kategori yang masih memiliki aspirasi', function () {
-    $admin    = User::factory()->admin()->create();
-    $siswa    = User::factory()->siswa()->create();
+    $admin = User::factory()->admin()->create();
+    $siswa = User::factory()->siswa()->create();
     $category = Category::factory()->create();
     Aspiration::factory()->create(['user_id' => $siswa->id, 'category_id' => $category->id]);
 
@@ -540,7 +538,7 @@ test('B.9 admin tidak dapat menghapus kategori yang masih memiliki aspirasi', fu
 });
 
 test('B.9 siswa tidak dapat mengubah kategori', function () {
-    $siswa    = User::factory()->siswa()->create();
+    $siswa = User::factory()->siswa()->create();
     $category = Category::factory()->create(['nama' => 'Kategori Asli']);
 
     $response = $this->actingAs($siswa)->put(route('categories.update', $category), [
