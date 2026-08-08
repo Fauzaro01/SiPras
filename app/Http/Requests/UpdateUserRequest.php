@@ -14,21 +14,23 @@ class UpdateUserRequest extends FormRequest
         return $this->user()->isAdmin();
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     */
     public function rules(): array
     {
         $user = $this->route('user');
 
         $rules = [
             'name' => 'required|string|max:255',
-            'kelas' => 'nullable|string|max:50',
-            'nis' => 'nullable|string|max:20|unique:users,nis,'.$user->id,
         ];
 
+        if ($user && $user->role === 'admin') {
+            $rules['username'] = 'required|string|max:50|unique:users,username,'.$user->id;
+        } else {
+            $rules['nis'] = 'required|string|max:20|unique:users,nis,'.($user ? $user->id : 'NULL');
+            $rules['kelas'] = 'nullable|string|max:50';
+        }
+
         if ($this->filled('password')) {
-            $rules['password'] = 'string|min:8|confirmed';
+            $rules['password'] = ['string', 'confirmed', \Illuminate\Validation\Rules\Password::min(8)->mixedCase()->numbers()];
         }
 
         return $rules;

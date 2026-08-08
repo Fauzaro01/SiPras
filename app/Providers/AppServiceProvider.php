@@ -36,5 +36,8 @@ class AppServiceProvider extends ServiceProvider
                 $view->with('sidebarBadges', $badges);
             }
         });
+        \App\Models\Aspiration::observe(\App\Observers\AspirationObserver::class);
+        \App\Models\Comment::observe(\App\Observers\CommentObserver::class);
+        \App\Models\User::observe(\App\Observers\UserObserver::class);
     }
 }

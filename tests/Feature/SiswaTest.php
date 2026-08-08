@@ -309,7 +309,7 @@ test('A.5 ganti password gagal jika konfirmasi tidak cocok', function () {
     $response->assertSessionHasErrors('password');
 });
 
-test('A.5 ganti password gagal jika password baru kurang dari 6 karakter', function () {
+test('A.5 ganti password gagal jika password baru kurang dari 8 karakter', function () {
     $siswa = User::factory()->siswa()->create([
         'password' => Hash::make('passwordLama123'),
     ]);

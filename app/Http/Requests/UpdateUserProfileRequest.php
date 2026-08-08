@@ -3,30 +3,29 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Password;
 
 class UpdateUserProfileRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
-    public function authorize()
+    public function authorize(): bool
     {
-        // Only the authenticated user can edit their own profile
-        return auth()->check();
+        // Any authenticated user can update their own profile
+        return $this->user() !== null;
     }
 
     /**
      * Get the validation rules that apply to the request.
      */
-    public function rules()
+    public function rules(): array
     {
-        $userId = $this->user()->id;
         return [
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'max:255', Rule::unique('users')->ignore($userId)],
-            'password' => ['nullable', 'string', 'min:8', 'confirmed'],
-            'avatar' => ['nullable', 'image', 'max:2048'], // max 2MB
+            'email' => ['nullable', 'email', 'max:255'],
+            'avatar' => ['nullable', 'image', 'max:2048'], // 2MB max
+            'password' => ['nullable', 'confirmed', Password::min(8)->mixedCase()->numbers()],
         ];
     }
 }

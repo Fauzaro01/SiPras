@@ -114,47 +114,6 @@
             </div>
         </div>
 
-        {{-- Mock dashboard card --}}
-        <!-- <div class="mt-16 max-w-2xl mx-auto px-4 sm:px-6">
-            <div class="bg-white rounded-2xl border border-gray-200 shadow-xl overflow-hidden">
-                {{-- Fake window bar --}}
-                <div class="flex items-center gap-1.5 px-4 py-3 bg-gray-50 border-b border-gray-100">
-                    <div class="w-3 h-3 bg-red-400 rounded-full"></div>
-                    <div class="w-3 h-3 bg-yellow-400 rounded-full"></div>
-                    <div class="w-3 h-3 bg-green-400 rounded-full"></div>
-                    <span class="ml-2 text-xs text-gray-400 font-medium">sipras.sch.id — Dashboard</span>
-                </div>
-                <div class="p-5 space-y-2.5">
-                    {{-- Row 1 --}}
-                    <div class="flex items-center gap-3 bg-gray-50 rounded-xl px-4 py-3">
-                        <div class="w-2 h-2 bg-yellow-400 rounded-full flex-shrink-0"></div>
-                        <div class="flex-1 min-w-0">
-                            <p class="text-sm font-medium text-gray-800 truncate">Kerusakan Kursi Kelas XII-A</p>
-                            <p class="text-xs text-gray-400">Ruang Kelas · 2 jam lalu</p>
-                        </div>
-                        <span class="text-xs bg-yellow-100 text-yellow-700 font-semibold px-2.5 py-0.5 rounded-full flex-shrink-0">Diajukan</span>
-                    </div>
-                    {{-- Row 2 --}}
-                    <div class="flex items-center gap-3 bg-gray-50 rounded-xl px-4 py-3">
-                        <div class="w-2 h-2 bg-blue-400 rounded-full flex-shrink-0"></div>
-                        <div class="flex-1 min-w-0">
-                            <p class="text-sm font-medium text-gray-800 truncate">Proyektor Lab Komputer Rusak</p>
-                            <p class="text-xs text-gray-400">Lab Komputer · kemarin</p>
-                        </div>
-                        <span class="text-xs bg-blue-100 text-blue-700 font-semibold px-2.5 py-0.5 rounded-full flex-shrink-0">Diproses</span>
-                    </div>
-                    {{-- Row 3 --}}
-                    <div class="flex items-center gap-3 bg-gray-50 rounded-xl px-4 py-3">
-                        <div class="w-2 h-2 bg-green-400 rounded-full flex-shrink-0"></div>
-                        <div class="flex-1 min-w-0">
-                            <p class="text-sm font-medium text-gray-800 truncate">Kipas Angin Perpustakaan Mati</p>
-                            <p class="text-xs text-gray-400">Perpustakaan · 3 hari lalu</p>
-                        </div>
-                        <span class="text-xs bg-green-100 text-green-700 font-semibold px-2.5 py-0.5 rounded-full flex-shrink-0">Selesai</span>
-                    </div>
-                </div>
-            </div>
-        </div> -->
     </section>
 
     {{-- ═══════════════ STATS ═══════════════ --}}
@@ -162,15 +121,15 @@
         <div class="max-w-4xl mx-auto px-4 sm:px-6">
             <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
                 <div>
-                    <p class="text-4xl font-extrabold gradient-text">500+</p>
+                    <p class="text-4xl font-extrabold gradient-text">{{ $totalAspirations }}</p>
                     <p class="text-sm text-gray-500 mt-1.5 font-medium">Aspirasi Dilaporkan</p>
                 </div>
                 <div>
-                    <p class="text-4xl font-extrabold gradient-text">95%</p>
+                    <p class="text-4xl font-extrabold gradient-text">{{ $persenSelesai }}%</p>
                     <p class="text-sm text-gray-500 mt-1.5 font-medium">Terselesaikan</p>
                 </div>
                 <div>
-                    <p class="text-4xl font-extrabold gradient-text">200+</p>
+                    <p class="text-4xl font-extrabold gradient-text">{{ $totalSiswa }}</p>
                     <p class="text-sm text-gray-500 mt-1.5 font-medium">Siswa Aktif</p>
                 </div>
                 <div>

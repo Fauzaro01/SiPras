@@ -302,8 +302,8 @@ test('B.6 admin dapat menambahkan siswa baru', function () {
         'role' => 'siswa',
         'nis' => '98765',
         'kelas' => 'X-4',
-        'password' => 'siswa123',
-        'password_confirmation' => 'siswa123',
+        'password' => 'Siswabaru123',
+        'password_confirmation' => 'Siswabaru123',
     ]);
 
     $response->assertRedirect(route('users.index'));
@@ -322,8 +322,8 @@ test('B.6 admin dapat menambahkan admin baru', function () {
         'name' => 'Admin Baru Tes',
         'role' => 'admin',
         'username' => 'adminbaru',
-        'password' => 'admin123',
-        'password_confirmation' => 'admin123',
+        'password' => 'Adminbaru123',
+        'password_confirmation' => 'Adminbaru123',
     ]);
 
     $response->assertRedirect(route('users.index'));
@@ -394,11 +394,11 @@ test('B.7 admin dapat mengganti password pengguna saat edit', function () {
     $this->actingAs($admin)->put(route('users.update', $siswa), [
         'name' => $siswa->name,
         'nis' => $siswa->nis,
-        'password' => 'newpassword123',
-        'password_confirmation' => 'newpassword123',
+        'password' => 'Newpassword123',
+        'password_confirmation' => 'Newpassword123',
     ]);
 
-    $this->assertTrue(Hash::check('newpassword123', $siswa->fresh()->password));
+    $this->assertTrue(Hash::check('Newpassword123', $siswa->fresh()->password));
 });
 
 test('B.7 admin dapat menghapus pengguna', function () {

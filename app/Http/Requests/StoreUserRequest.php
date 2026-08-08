@@ -22,7 +22,7 @@ class StoreUserRequest extends FormRequest
         $rules = [
             'name' => 'required|string|max:255',
             'role' => 'required|in:admin,siswa',
-            'password' => 'required|string|min:8|confirmed',
+            'password' => ['required', 'string', 'confirmed', \Illuminate\Validation\Rules\Password::min(8)->mixedCase()->numbers()],
         ];
 
         if ($this->input('role') === 'admin') {

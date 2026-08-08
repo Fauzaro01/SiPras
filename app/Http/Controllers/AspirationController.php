@@ -138,7 +138,10 @@ class AspirationController extends Controller
         $validated = $request->validated();
         $validated['user_id'] = Auth::id();
         $validated['status'] = 'diajukan';
-        $validated['bukti_foto'] = $request->file('bukti_foto')->store('bukti_foto', 'public');
+        
+        $file = $request->file('bukti_foto');
+        $filename = \Illuminate\Support\Str::uuid() . '.' . $file->getClientOriginalExtension();
+        $validated['bukti_foto'] = $file->storeAs('bukti_foto', $filename, 'public');
 
         Aspiration::create($validated);
 
@@ -158,7 +161,9 @@ class AspirationController extends Controller
             'feedbacks' => fn ($q) => $q->whereNull('parent_id')->latest(),
             'feedbacks.user',
             'feedbacks.replies' => fn ($q) => $q->oldest(), // sort replies chronologically
-            'feedbacks.replies.user'
+            'feedbacks.replies.user',
+            'comments' => fn ($q) => $q->oldest(),
+            'comments.user',
         ]);
 
         return view('aspirations.show', compact('aspiration'));
@@ -170,15 +175,9 @@ class AspirationController extends Controller
 
         $aspiration->update($validated);
 
-        // F-04: Send email notification to the aspiration owner about status change using raw email
-        if ($aspiration->user && isset($aspiration->user->email)) {
-            \Illuminate\Support\Facades\Mail::raw(
-                "Status aspirasi Anda telah berubah menjadi: {$aspiration->status}",
-                function ($message) use ($aspiration) {
-                    $message->to($aspiration->user->email)
-                        ->subject('Status Aspirasi Anda Telah Diupdate');
-                }
-            );
+        if ($aspiration->user && !empty($aspiration->user->email)) {
+            \Illuminate\Support\Facades\Mail::to($aspiration->user->email)
+                ->send(new \App\Mail\AspirationStatusChanged($aspiration));
         }
 
         return redirect()->back()
@@ -197,7 +196,7 @@ class AspirationController extends Controller
                 ->with('error', 'Aspirasi yang sudah diproses atau selesai tidak dapat dihapus.');
         }
 
-        if ($aspiration->bukti_foto) {
+        if ($aspiration->bukti_foto && \Illuminate\Support\Facades\Storage::disk('public')->exists($aspiration->bukti_foto)) {
             Storage::disk('public')->delete($aspiration->bukti_foto);
         }
 

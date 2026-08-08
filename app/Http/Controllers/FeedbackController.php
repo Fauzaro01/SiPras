@@ -5,33 +5,19 @@ namespace App\Http\Controllers;
 use App\Models\Aspiration;
 use App\Models\Feedback;
 use Illuminate\Http\Request;
+use App\Http\Requests\StoreFeedbackRequest;
 
 class FeedbackController extends Controller
 {
     /**
      * Simpan feedback baru untuk sebuah aspirasi (hanya admin)
      */
-    public function store(Request $request, Aspiration $aspiration)
+    public function store(StoreFeedbackRequest $request, Aspiration $aspiration)
     {
-        // F-13: Authorize admin OR the owner of the aspiration
-        if (!auth()->user()->isAdmin() && $aspiration->user_id !== auth()->id()) {
-            abort(403, 'Anda tidak memiliki akses ke aspirasi ini.');
+        if (!auth()->user()->isAdmin()) {
+            abort(403);
         }
-
-        $validated = $request->validate([
-            'pesan' => 'required|string',
-            'parent_id' => 'nullable|exists:feedbacks,id', // F-13: untuk reply
-        ]);
-
-        // F-13: Pastikan feedback parent milik aspirasi yang sama
-        if (!empty($validated['parent_id'])) {
-            $parentExists = Feedback::where('id', $validated['parent_id'])
-                ->where('aspiration_id', $aspiration->id)
-                ->exists();
-            if (!$parentExists) {
-                abort(400, 'Feedback parent tidak valid.');
-            }
-        }
+        $validated = $request->validated();
 
         $aspiration->feedbacks()->create([
             'parent_id' => $validated['parent_id'] ?? null,
