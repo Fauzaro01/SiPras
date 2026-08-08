@@ -218,7 +218,7 @@
             </select>
         </div>
         @if(Auth::user()->isAdmin())
-        <div class="w-full md:w-48">
+        <div class="w-full md:w-36">
             <label for="status" class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Status</label>
             <select name="status" id="status" class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-sm">
                 <option value="">Semua Status</option>
@@ -226,12 +226,36 @@
                 <option value="diproses" {{ request('status') == 'diproses' ? 'selected' : '' }}>Diproses</option>
             </select>
         </div>
+        <div class="w-full md:w-36">
+            <label for="priority" class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Prioritas</label>
+            <select name="priority" id="priority" class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-sm">
+                <option value="">Semua</option>
+                <option value="rendah" {{ request('priority') == 'rendah' ? 'selected' : '' }}>Rendah</option>
+                <option value="sedang" {{ request('priority') == 'sedang' ? 'selected' : '' }}>Sedang</option>
+                <option value="tinggi" {{ request('priority') == 'tinggi' ? 'selected' : '' }}>Tinggi</option>
+                <option value="mendesak" {{ request('priority') == 'mendesak' ? 'selected' : '' }}>Mendesak</option>
+            </select>
+        </div>
+        <div class="w-full md:w-36">
+            <label for="start_date" class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Mulai</label>
+            <input type="date" name="start_date" id="start_date" value="{{ request('start_date') }}" class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-sm">
+        </div>
+        <div class="w-full md:w-36">
+            <label for="end_date" class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Sampai</label>
+            <input type="date" name="end_date" id="end_date" value="{{ request('end_date') }}" class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-sm">
+        </div>
         @endif
         <div class="flex gap-2 w-full md:w-auto">
             <button type="submit" class="flex-1 md:flex-none bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg font-semibold text-sm transition shadow-sm">
                 Filter
             </button>
-            @if(request()->anyFilled(['search', 'category_id', 'status']))
+            @if(Auth::user()->isAdmin())
+                <a href="{{ route('aspirations.export', request()->all()) }}" class="flex-1 md:flex-none bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-lg font-semibold text-sm transition shadow-sm flex items-center gap-1.5 justify-center" title="Ekspor rekap hasil filter ke CSV/Excel">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                    Export
+                </a>
+            @endif
+            @if(request()->anyFilled(['search', 'category_id', 'status', 'priority', 'start_date', 'end_date']))
                 <a href="{{ route('aspirations.index') }}" class="flex-1 md:flex-none bg-gray-100 hover:bg-gray-200 text-gray-700 px-5 py-2 rounded-lg font-semibold text-sm transition text-center">
                     Reset
                 </a>
@@ -251,6 +275,7 @@
                                 <th class="text-left px-3 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider dt-col-hide-md">Pelapor</th>
                             @endif
                             <th class="text-left px-3 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider dt-col-hide-sm">Lokasi</th>
+                            <th class="text-left px-3 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider dt-col-hide-sm">Prioritas</th>
                             <th class="text-left px-3 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Status</th>
                             <th class="text-left px-3 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider dt-col-hide-sm">Tanggal</th>
                             <th class="text-center px-3 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Aksi</th>
@@ -270,6 +295,11 @@
                                     </td>
                                 @endif
                                 <td class="px-3 py-3.5 text-gray-600 dt-col-hide-sm">{{ $aspiration->lokasi }}</td>
+                                <td class="px-3 py-3.5 dt-col-hide-sm">
+                                    <span class="inline-flex px-2.5 py-0.5 rounded-full text-xs font-semibold {{ $aspiration->priority_color }}">
+                                        {{ $aspiration->priority_label }}
+                                    </span>
+                                </td>
                                 <td class="px-3 py-3.5">
                                     <span class="inline-flex px-2.5 py-0.5 rounded-full text-xs font-semibold {{ $aspiration->status_color }}">
                                         {{ $aspiration->status_label }}

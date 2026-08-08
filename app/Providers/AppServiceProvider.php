@@ -19,6 +19,22 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        view()->composer('layouts.dashboard', function ($view) {
+            if (auth()->check()) {
+                $user = auth()->user();
+                $badges = [];
+                if ($user->isAdmin()) {
+                    $badges['pending_aspirations'] = \App\Models\Aspiration::where('status', 'diajukan')->count();
+                } else {
+                    $badges['active_aspirations'] = \App\Models\Aspiration::where('user_id', $user->id)
+                        ->whereIn('status', ['diajukan', 'diproses'])
+                        ->count();
+                    $badges['history_aspirations'] = \App\Models\Aspiration::where('user_id', $user->id)
+                        ->whereIn('status', ['selesai', 'ditolak'])
+                        ->count();
+                }
+                $view->with('sidebarBadges', $badges);
+            }
+        });
     }
 }

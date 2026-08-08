@@ -35,7 +35,7 @@
                 @enderror
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
                 <!-- Kategori -->
                 <div>
                     <label for="category_id" class="block text-sm font-medium text-gray-700 mb-1.5">
@@ -74,6 +74,27 @@
                         placeholder="Contoh: Gedung A Lantai 2"
                     >
                     @error('lokasi')
+                        <p class="mt-1.5 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <!-- Prioritas (F-08) -->
+                <div>
+                    <label for="priority" class="block text-sm font-medium text-gray-700 mb-1.5">
+                        Prioritas <span class="text-red-500">*</span>
+                    </label>
+                    <select 
+                        name="priority" 
+                        id="priority" 
+                        required
+                        class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm transition bg-white"
+                    >
+                        <option value="rendah" {{ old('priority') == 'rendah' ? 'selected' : '' }}>🟢 Rendah</option>
+                        <option value="sedang" {{ old('priority') == 'sedang' || !old('priority') ? 'selected' : '' }}>🟡 Sedang</option>
+                        <option value="tinggi" {{ old('priority') == 'tinggi' ? 'selected' : '' }}>🟠 Tinggi</option>
+                        <option value="mendesak" {{ old('priority') == 'mendesak' ? 'selected' : '' }}>🔴 Mendesak</option>
+                    </select>
+                    @error('priority')
                         <p class="mt-1.5 text-sm text-red-600">{{ $message }}</p>
                     @enderror
                 </div>

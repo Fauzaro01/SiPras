@@ -28,9 +28,14 @@
                         <span class="bg-white/20 px-3 py-1 rounded-full text-xs sm:text-sm">📍 {{ $aspiration->lokasi }}</span>
                     </div>
                 </div>
-                <span class="px-3 py-1.5 rounded-full text-xs sm:text-sm font-semibold {{ $aspiration->status_color }} self-start flex-shrink-0">
-                    {{ $aspiration->status_label }}
-                </span>
+                <div class="flex flex-col sm:items-end gap-2 self-start flex-shrink-0">
+                    <span class="px-3 py-1.5 rounded-full text-xs sm:text-sm font-semibold {{ $aspiration->status_color }}">
+                        {{ $aspiration->status_label }}
+                    </span>
+                    <span class="px-3 py-1 rounded-full text-xs font-semibold bg-white/10 text-white border border-white/20">
+                        {{ $aspiration->priority_label }}
+                    </span>
+                </div>
             </div>
         </div>
 
@@ -176,7 +181,7 @@
                         </div>
                     </div>
 
-                    {{-- Items: Setiap feedback --}}
+                    {{-- Items: Setiap feedback (F-13) --}}
                     @foreach($aspiration->feedbacks as $feedback)
                         <div class="relative flex items-start pb-6" id="feedback-{{ $feedback->id }}">
                             <div class="flex-shrink-0 w-8 h-8 rounded-full bg-blue-100 border-2 border-white shadow-sm flex items-center justify-center z-10">
@@ -194,11 +199,72 @@
                                         <div class="mt-2 bg-blue-50 border border-blue-100 rounded-lg px-4 py-3">
                                             <p class="text-sm text-gray-700 leading-relaxed whitespace-pre-line">{{ $feedback->pesan }}</p>
                                         </div>
+
+                                        {{-- F-13: Replies/Thread --}}
+                                        @if($feedback->replies && $feedback->replies->count() > 0)
+                                            <div class="mt-4 pl-4 border-l-2 border-gray-100 dark:border-gray-800 space-y-4">
+                                                @foreach($feedback->replies as $reply)
+                                                    <div class="flex items-start gap-3" id="feedback-{{ $reply->id }}">
+                                                        <div class="w-6 h-6 rounded-full bg-blue-500 text-white flex items-center justify-center flex-shrink-0 text-[10px] font-bold">
+                                                            {{ strtoupper(substr($reply->user->name ?? 'U', 0, 1)) }}
+                                                        </div>
+                                                        <div class="flex-1 min-w-0">
+                                                            <div class="flex items-start justify-between gap-2">
+                                                                <div>
+                                                                    <span class="text-xs font-semibold text-gray-700">{{ $reply->user->name ?? 'Pengguna' }}</span>
+                                                                    <span class="text-[10px] text-gray-400">&middot; {{ $reply->created_at->translatedFormat('d F Y, H:i') }}</span>
+                                                                </div>
+                                                                @if(Auth::user()->isAdmin())
+                                                                    <form method="POST"
+                                                                        action="{{ route('feedbacks.destroy', [$aspiration, $reply]) }}"
+                                                                        data-confirm="Hapus balasan ini?"
+                                                                        class="flex-shrink-0">
+                                                                        @csrf
+                                                                        @method('DELETE')
+                                                                        <button type="submit" title="Hapus balasan"
+                                                                            class="text-gray-300 hover:text-red-500 transition rounded-md hover:bg-red-50 p-0.5">
+                                                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                                                            </svg>
+                                                                        </button>
+                                                                    </form>
+                                                                @endif
+                                                            </div>
+                                                            <p class="text-xs text-gray-700 mt-1 bg-gray-50 border border-gray-100 rounded-lg px-3 py-2 leading-relaxed whitespace-pre-line">{{ $reply->pesan }}</p>
+                                                        </div>
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                        @endif
+
+                                        {{-- Reply Form Button/Toggle --}}
+                                        <div class="mt-2">
+                                            <button onclick="toggleReplyForm({{ $feedback->id }})" class="text-xs font-semibold text-blue-600 hover:text-blue-700 transition">
+                                                Balas...
+                                            </button>
+                                        </div>
+
+                                        {{-- Inline Reply Form --}}
+                                        <div id="reply-form-{{ $feedback->id }}" class="hidden mt-3 max-w-lg">
+                                            <form method="POST" action="{{ route('feedbacks.store', $aspiration) }}" class="flex gap-2 items-end">
+                                                @csrf
+                                                <input type="hidden" name="parent_id" value="{{ $feedback->id }}">
+                                                <div class="flex-1">
+                                                    <textarea name="pesan" rows="1" required
+                                                        class="w-full px-3 py-2 border border-gray-200 rounded-lg text-xs focus:ring-1 focus:ring-blue-500 focus:outline-none resize-none bg-gray-50 focus:bg-white"
+                                                        placeholder="Tulis balasan..."></textarea>
+                                                </div>
+                                                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs px-3 py-2 rounded-lg shadow-sm transition">
+                                                    Kirim
+                                                </button>
+                                            </form>
+                                        </div>
+
                                     </div>
                                     @if(Auth::user()->isAdmin())
                                         <form method="POST"
                                             action="{{ route('feedbacks.destroy', [$aspiration, $feedback]) }}"
-                                            data-confirm="Hapus feedback ini?"
+                                            data-confirm="Hapus feedback ini beserta semua balasannya?"
                                             class="flex-shrink-0 mt-0.5">
                                             @csrf
                                             @method('DELETE')
@@ -268,15 +334,6 @@
                 <div class="mt-5 pt-5 border-t border-gray-100">
                     <h4 class="text-sm font-semibold text-gray-700 mb-3">Tambah Feedback</h4>
 
-                    @if(session('success'))
-                        <div class="mb-3 flex items-center gap-2 bg-green-50 border border-green-200 rounded-lg px-4 py-2.5">
-                            <svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                            </svg>
-                            <p class="text-green-700 text-sm">{{ session('success') }}</p>
-                        </div>
-                    @endif
-
                     <form method="POST" action="{{ route('feedbacks.store', $aspiration) }}" class="space-y-3">
                         @csrf
                         <textarea
@@ -332,6 +389,17 @@
         document.body.style.overflow = '';
     }
     document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+
+    // F-13: Toggle reply form
+    function toggleReplyForm(id) {
+        var form = document.getElementById('reply-form-' + id);
+        if (form.classList.contains('hidden')) {
+            form.classList.remove('hidden');
+            form.querySelector('textarea').focus();
+        } else {
+            form.classList.add('hidden');
+        }
+    }
 </script>
 @endpush
 @endsection

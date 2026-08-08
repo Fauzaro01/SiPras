@@ -34,6 +34,14 @@ class AspirationController extends Controller
             $query->where('status', $request->status);
         }
 
+        if ($request->filled('priority')) {
+            $query->where('priority', $request->priority);
+        }
+
+        if ($request->filled('start_date') && $request->filled('end_date')) {
+            $query->whereBetween('created_at', [$request->start_date . ' 00:00:00', $request->end_date . ' 23:59:59']);
+        }
+
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
@@ -91,6 +99,14 @@ class AspirationController extends Controller
             $query->where('status', $request->status);
         }
 
+        if ($request->filled('priority')) {
+            $query->where('priority', $request->priority);
+        }
+
+        if ($request->filled('start_date') && $request->filled('end_date')) {
+            $query->whereBetween('created_at', [$request->start_date . ' 00:00:00', $request->end_date . ' 23:59:59']);
+        }
+
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
@@ -135,7 +151,14 @@ class AspirationController extends Controller
             abort(403);
         }
 
-        $aspiration->load(['user', 'category', 'feedbacks' => fn ($q) => $q->latest(), 'feedbacks.user']);
+        $aspiration->load([
+            'user',
+            'category',
+            'feedbacks' => fn ($q) => $q->whereNull('parent_id')->latest(),
+            'feedbacks.user',
+            'feedbacks.replies' => fn ($q) => $q->oldest(), // sort replies chronologically
+            'feedbacks.replies.user'
+        ]);
 
         return view('aspirations.show', compact('aspiration'));
     }
@@ -156,6 +179,12 @@ class AspirationController extends Controller
             abort(403);
         }
 
+        // B-06: Hanya aspirasi berstatus 'diajukan' yang boleh dihapus
+        if (Auth::user()->isSiswa() && $aspiration->status !== 'diajukan') {
+            return redirect()->route('aspirations.index')
+                ->with('error', 'Aspirasi yang sudah diproses atau selesai tidak dapat dihapus.');
+        }
+
         if ($aspiration->bukti_foto) {
             Storage::disk('public')->delete($aspiration->bukti_foto);
         }
@@ -163,6 +192,6 @@ class AspirationController extends Controller
         $aspiration->delete();
 
         return redirect()->route('aspirations.index')
-            ->with('success', 'Aspirasi berhasil dihapus!');
+            ->with('success', 'Aspirasi berhasil dihapus.');
     }
 }

@@ -12,6 +12,7 @@ class Feedback extends Model
     protected $table = 'feedbacks';
 
     protected $fillable = [
+        'parent_id', // F-13: untuk reply
         'aspiration_id',
         'user_id',
         'pesan',
@@ -31,5 +32,31 @@ class Feedback extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    // ── F-13: Threading ──────────────────────────────────────
+
+    /**
+     * Get replies to this feedback (siswa membalas admin)
+     */
+    public function replies()
+    {
+        return $this->hasMany(Feedback::class, 'parent_id')->with('user')->latest();
+    }
+
+    /**
+     * Get the parent feedback (null if this is a top-level feedback)
+     */
+    public function parent()
+    {
+        return $this->belongsTo(Feedback::class, 'parent_id');
+    }
+
+    /**
+     * Check if this is a top-level feedback (bukan reply)
+     */
+    public function isTopLevel(): bool
+    {
+        return is_null($this->parent_id);
     }
 }

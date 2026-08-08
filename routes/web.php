@@ -25,32 +25,39 @@ Route::middleware('guest')->group(function () {
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-// Protected Routes (all authenticated users)
-Route::middleware('auth')->group(function () {
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    // Protected Routes (all authenticated users)
+    Route::middleware('auth')->group(function () {
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+        Route::get('/search', [\App\Http\Controllers\SearchController::class, 'search'])->name('search');
 
-    // Aspiration Routes
-    Route::resource('aspirations', AspirationController::class)->except(['edit', 'update']);
-    Route::post('/aspirations/{aspiration}/update-status', [AspirationController::class, 'updateStatus'])
-        ->name('aspirations.update-status')->middleware('admin');
-    Route::get('/histori', [AspirationController::class, 'histori'])->name('aspirations.histori');
+        // Aspiration Routes
+        Route::resource('aspirations', AspirationController::class)->except(['edit', 'update']);
+        Route::post('/aspirations/{aspiration}/update-status', [AspirationController::class, 'updateStatus'])
+            ->name('aspirations.update-status')->middleware('admin');
+        Route::get('/histori', [AspirationController::class, 'histori'])->name('aspirations.histori');
 
-    // Password Change (all authenticated users)
-    Route::get('/profile/change-password', [AuthController::class, 'changePasswordForm'])->name('password.change');
-    Route::post('/profile/change-password', [AuthController::class, 'updatePassword'])->name('password.update');
-
-    // Admin-only Routes
-    Route::middleware('admin')->group(function () {
-        // Feedback Routes
+        // Feedback Routes (accessible by admin or the owner of aspiration)
         Route::post('/aspirations/{aspiration}/feedbacks', [FeedbackController::class, 'store'])
             ->name('feedbacks.store');
-        Route::delete('/aspirations/{aspiration}/feedbacks/{feedback}', [FeedbackController::class, 'destroy'])
-            ->name('feedbacks.destroy');
 
-        // Category Routes
-        Route::resource('categories', CategoryController::class)->only(['index', 'store', 'update', 'destroy']);
+        // Password Change (all authenticated users)
+        Route::get('/profile/change-password', [AuthController::class, 'changePasswordForm'])->name('password.change');
+        Route::post('/profile/change-password', [AuthController::class, 'updatePassword'])->name('password.update');
 
-        // User Management Routes
-        Route::resource('users', UserController::class)->only(['index', 'create', 'store', 'update', 'destroy']);
+        // Admin-only Routes
+        Route::middleware('admin')->group(function () {
+            // Export Route (F-03)
+            Route::get('/export/aspirations', [\App\Http\Controllers\ExportController::class, 'exportCsv'])
+                ->name('aspirations.export');
+
+            // Feedback Destroy Routes
+            Route::delete('/aspirations/{aspiration}/feedbacks/{feedback}', [FeedbackController::class, 'destroy'])
+                ->name('feedbacks.destroy');
+
+            // Category Routes
+            Route::resource('categories', CategoryController::class)->only(['index', 'store', 'update', 'destroy']);
+
+            // User Management Routes
+            Route::resource('users', UserController::class)->only(['index', 'create', 'store', 'update', 'destroy']);
+        });
     });
-});

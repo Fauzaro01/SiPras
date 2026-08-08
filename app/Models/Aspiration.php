@@ -17,6 +17,7 @@ class Aspiration extends Model
         'lokasi',
         'bukti_foto',
         'status',
+        'priority', // F-08
     ];
 
     /**
@@ -65,9 +66,39 @@ class Aspiration extends Model
         return match ($this->status) {
             'diajukan' => 'Diajukan',
             'diproses' => 'Diproses',
-            'selesai' => 'Selesai',
-            'ditolak' => 'Ditolak',
-            default => ucfirst($this->status),
+            'selesai'  => 'Selesai',
+            'ditolak'  => 'Ditolak',
+            default    => ucfirst($this->status),
+        };
+    }
+
+    // ── F-08: Priority accessors ────────────────────────────
+
+    /**
+     * Get priority badge color classes
+     */
+    public function getPriorityColorAttribute(): string
+    {
+        return match ($this->priority) {
+            'rendah'   => 'priority-rendah',
+            'sedang'   => 'priority-sedang',
+            'tinggi'   => 'priority-tinggi',
+            'mendesak' => 'priority-mendesak',
+            default    => 'priority-sedang',
+        };
+    }
+
+    /**
+     * Get priority label in Bahasa Indonesia
+     */
+    public function getPriorityLabelAttribute(): string
+    {
+        return match ($this->priority) {
+            'rendah'   => '🟢 Rendah',
+            'sedang'   => '🟡 Sedang',
+            'tinggi'   => '🟠 Tinggi',
+            'mendesak' => '🔴 Mendesak',
+            default    => '🟡 Sedang',
         };
     }
 }
