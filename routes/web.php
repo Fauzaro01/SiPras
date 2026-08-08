@@ -14,7 +14,12 @@ Route::get('/', function () {
         return redirect()->route('dashboard');
     }
 
-    return view('landing');
+    $totalAspirations = \App\Models\Aspiration::count();
+    $totalSiswa = \App\Models\User::where('role', 'siswa')->count();
+    $totalSelesai = \App\Models\Aspiration::where('status', 'selesai')->count();
+    $persenSelesai = $totalAspirations > 0 ? round(($totalSelesai / $totalAspirations) * 100) : 100;
+
+    return view('landing', compact('totalAspirations', 'totalSiswa', 'persenSelesai'));
 })->name('home');
 
 // Authentication Routes
@@ -40,6 +45,16 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
         Route::post('/aspirations/{aspiration}/feedbacks', [FeedbackController::class, 'store'])
             ->name('feedbacks.store');
 
+        // Comment Routes
+        Route::post('/aspirations/{aspiration}/comments', [\App\Http\Controllers\CommentController::class, 'store'])
+            ->name('comments.store');
+        Route::delete('/comments/{comment}', [\App\Http\Controllers\CommentController::class, 'destroy'])
+            ->name('comments.destroy');
+
+        // Profile Edit Routes (for all users)
+    Route::get('/profile/edit', [UserController::class, 'editProfile'])->name('profile.edit');
+    Route::put('/profile', [UserController::class, 'updateProfile'])->name('profile.update');
+
         // Password Change (all authenticated users)
         Route::get('/profile/change-password', [AuthController::class, 'changePasswordForm'])->name('password.change');
         Route::post('/profile/change-password', [AuthController::class, 'updatePassword'])->name('password.update');
@@ -59,5 +74,9 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
             // User Management Routes
             Route::resource('users', UserController::class)->only(['index', 'create', 'store', 'update', 'destroy']);
+
+            // Activity Log Routes
+            Route::get('/activity-logs', [\App\Http\Controllers\ActivityLogController::class, 'index'])
+                ->name('activity-logs.index');
         });
     });

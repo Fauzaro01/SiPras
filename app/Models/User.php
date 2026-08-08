@@ -24,6 +24,8 @@ class User extends Authenticatable
         'role',
         'kelas',
         'password',
+        'email',
+        'avatar',
     ];
 
     /**
@@ -70,5 +72,21 @@ class User extends Authenticatable
     public function aspirations()
     {
         return $this->hasMany(Aspiration::class);
+    }
+
+    /**
+     * Get comments for this user
+     */
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
+
+    /**
+     * Get activity logs for this user
+     */
+    public function activityLogs()
+    {
+        return $this->hasMany(ActivityLog::class);
     }
 }

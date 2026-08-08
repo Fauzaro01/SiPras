@@ -3,22 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Models\Aspiration;
-use App\Models\Category;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class ExportController extends Controller
 {
+    /**
+     * Ekspor daftar aspirasi ke CSV dengan filter
+     */
     public function exportCsv(Request $request)
     {
-        // Admin only authorization
-        if (!Auth::user()->isAdmin()) {
-            abort(403);
-        }
-
         $query = Aspiration::query()->with(['user', 'category']);
 
-        // Apply filters
+        // Filter
         if ($request->filled('category_id')) {
             $query->where('category_id', $request->category_id);
         }
@@ -35,55 +31,49 @@ class ExportController extends Controller
             $query->whereBetween('created_at', [$request->start_date . ' 00:00:00', $request->end_date . ' 23:59:59']);
         }
 
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('judul', 'like', "%{$search}%")
+                  ->orWhere('deskripsi', 'like', "%{$search}%")
+                  ->orWhere('lokasi', 'like', "%{$search}%");
+            });
+        }
+
         $aspirations = $query->latest()->get();
 
-        $filename = 'rekap_aspirasi_' . date('Y-m-d_H-i-s') . '.csv';
+        $filename = "aspirasi_export_" . date('Ymd_His') . ".csv";
 
         $headers = [
-            'Content-Type' => 'text/csv; charset=UTF-8',
-            'Content-Disposition' => "attachment; filename=\"{$filename}\"",
-            'Pragma' => 'no-cache',
-            'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
-            'Expires' => '0'
+            "Content-type"        => "text/csv; charset=UTF-8",
+            "Content-Disposition" => "attachment; filename=$filename",
+            "Pragma"              => "no-cache",
+            "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
+            "Expires"             => "0"
         ];
 
-        $callback = function() use($aspirations) {
+        $columns = ['ID', 'Judul', 'Deskripsi', 'Lokasi', 'Kategori', 'Pelapor (NIS)', 'Status', 'Prioritas', 'Tanggal Pengajuan'];
+
+        $callback = function() use($aspirations, $columns) {
             $file = fopen('php://output', 'w');
             
-            // Add UTF-8 BOM for proper Excel opening
+            // Add UTF-8 BOM for Excel alignment
             fprintf($file, chr(0xEF).chr(0xBB).chr(0xBF));
+            
+            fputcsv($file, $columns);
 
-            // Headers
-            fputcsv($file, [
-                'ID',
-                'Judul',
-                'Kategori',
-                'Deskripsi',
-                'Lokasi',
-                'Prioritas',
-                'Status',
-                'Pelapor (Nama)',
-                'Pelapor (NIS)',
-                'Pelapor (Kelas)',
-                'Tanggal Diajukan',
-                'Terakhir Diperbarui'
-            ], ';');
-
-            foreach ($aspirations as $asp) {
+            foreach ($aspirations as $aspiration) {
                 fputcsv($file, [
-                    $asp->id,
-                    $asp->judul,
-                    $asp->category->nama ?? '-',
-                    $asp->deskripsi,
-                    $asp->lokasi,
-                    $asp->priority_label,
-                    $asp->status_label,
-                    $asp->user->name ?? '-',
-                    $asp->user->nis ?? '-',
-                    $asp->user->kelas ?? '-',
-                    $asp->created_at->format('Y-m-d H:i:s'),
-                    $asp->updated_at->format('Y-m-d H:i:s')
-                ], ';');
+                    $aspiration->id,
+                    $aspiration->judul,
+                    $aspiration->deskripsi,
+                    $aspiration->lokasi,
+                    $aspiration->category->nama ?? '-',
+                    ($aspiration->user->name ?? '-') . ' (' . ($aspiration->user->nis ?? '-') . ')',
+                    $aspiration->status_label,
+                    str_replace(['🟢 ', '🟡 ', '🟠 ', '🔴 '], '', $aspiration->priority_label),
+                    $aspiration->created_at->format('Y-m-d H:i:s'),
+                ]);
             }
 
             fclose($file);

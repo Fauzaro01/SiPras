@@ -30,15 +30,22 @@ class UserController extends Controller
             $query->where('role', $request->role);
         }
 
+        $statsData = User::selectRaw("COUNT(*) as total, SUM(role='siswa') as siswa, SUM(role='admin') as admin")->first();
         $stats = [
-            'total' => User::count(),
-            'siswa' => User::where('role', 'siswa')->count(),
-            'admin' => User::where('role', 'admin')->count(),
+            'total' => (int) ($statsData->total ?? 0),
+            'siswa' => (int) ($statsData->siswa ?? 0),
+            'admin' => (int) ($statsData->admin ?? 0),
         ];
 
         $users = $query->latest()->paginate(20)->withQueryString();
 
         return view('users.index', compact('users', 'stats'));
+    }
+
+    // Show create form for new user
+    public function create()
+    {
+        return view('users.create');
     }
 
     // Show profile edit form for authenticated user
@@ -56,7 +63,13 @@ class UserController extends Controller
 
         // Handle avatar upload if present
         if ($request->hasFile('avatar')) {
-            $path = $request->file('avatar')->store('avatars', 'public');
+            // Delete old avatar if it exists
+            if (!empty($user->avatar)) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($user->avatar);
+            }
+            $file = $request->file('avatar');
+            $filename = \Illuminate\Support\Str::uuid() . '.' . $file->getClientOriginalExtension();
+            $path = $file->storeAs('avatars', $filename, 'public');
             $validated['avatar'] = $path;
         }
 
@@ -109,8 +122,12 @@ class UserController extends Controller
             ->pluck('bukti_foto')
             ->toArray();
 
-        if (! empty($photos)) {
-            Storage::disk('public')->delete($photos);
+        $photosToDelete = array_filter($photos, function ($photo) {
+            return \Illuminate\Support\Facades\Storage::disk('public')->exists($photo);
+        });
+
+        if (! empty($photosToDelete)) {
+            Storage::disk('public')->delete($photosToDelete);
         }
 
         $user->delete();

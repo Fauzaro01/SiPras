@@ -45,6 +45,14 @@ class Aspiration extends Model
     }
 
     /**
+     * Get all comments for the aspiration
+     */
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
+
+    /**
      * Get status badge color
      */
     public function getStatusColorAttribute()

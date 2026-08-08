@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use Illuminate\Http\Request;
+use App\Http\Requests\StoreCategoryRequest;
+use App\Http\Requests\UpdateCategoryRequest;
 
 class CategoryController extends Controller
 {
@@ -14,12 +16,9 @@ class CategoryController extends Controller
         return view('categories.index', compact('categories'));
     }
 
-    public function store(Request $request)
+    public function store(StoreCategoryRequest $request)
     {
-        $validated = $request->validate([
-            'nama' => 'required|string|max:255|unique:categories,nama',
-            'deskripsi' => 'nullable|string|max:255',
-        ]);
+        $validated = $request->validated();
 
         Category::create($validated);
 
@@ -27,12 +26,9 @@ class CategoryController extends Controller
             ->with('success', 'Kategori berhasil ditambahkan!');
     }
 
-    public function update(Request $request, Category $category)
+    public function update(UpdateCategoryRequest $request, Category $category)
     {
-        $validated = $request->validate([
-            'nama' => 'required|string|max:255|unique:categories,nama,'.$category->id,
-            'deskripsi' => 'nullable|string|max:255',
-        ]);
+        $validated = $request->validated();
 
         $category->update($validated);
 

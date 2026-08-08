@@ -360,6 +360,104 @@
         </div>
     </div>
 
+    {{-- ═══ Comments Section (F-10) ═══ --}}
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+        <div class="px-5 sm:px-6 py-4 border-b border-gray-100 flex items-center gap-2">
+            <div class="w-7 h-7 rounded-lg bg-green-100 flex items-center justify-center">
+                <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z"/>
+                </svg>
+            </div>
+            <h3 class="font-semibold text-gray-800 text-sm">Diskusi & Komentar</h3>
+            @if($aspiration->comments->count() > 0)
+                <span class="bg-green-100 text-green-700 text-xs font-bold px-2 py-0.5 rounded-full">
+                    {{ $aspiration->comments->count() }}
+                </span>
+            @endif
+        </div>
+
+        <div class="p-5 sm:p-6 space-y-6">
+            {{-- Comment List --}}
+            @if($aspiration->comments->count() > 0)
+                <div class="space-y-4">
+                    @foreach($aspiration->comments as $comment)
+                        <div class="flex items-start gap-3 pb-4 border-b border-gray-50 last:border-0 last:pb-0" id="comment-{{ $comment->id }}">
+                            {{-- User Avatar / Initial --}}
+                            @if($comment->user->avatar)
+                                <img src="{{ asset('storage/' . $comment->user->avatar) }}" alt="{{ $comment->user->name }}" class="w-8 h-8 rounded-full object-cover flex-shrink-0">
+                            @else
+                                <div class="w-8 h-8 rounded-full bg-green-500 text-white flex items-center justify-center text-xs font-bold flex-shrink-0">
+                                    {{ strtoupper(substr($comment->user->name ?? 'U', 0, 1)) }}
+                                </div>
+                            @endif
+
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-center justify-between gap-2">
+                                    <div>
+                                        <span class="text-sm font-semibold text-gray-800">{{ $comment->user->name }}</span>
+                                        @if($comment->user->isAdmin())
+                                            <span class="ml-1 bg-blue-100 text-blue-800 text-[10px] font-bold px-1.5 py-0.5 rounded">Admin</span>
+                                        @else
+                                            <span class="ml-1 bg-gray-100 text-gray-600 text-[10px] font-medium px-1.5 py-0.5 rounded">{{ $comment->user->kelas ?? 'Siswa' }}</span>
+                                        @endif
+                                        <span class="text-xs text-gray-400 ml-2">{{ $comment->created_at->diffForHumans() }}</span>
+                                    </div>
+
+                                    {{-- Delete Button --}}
+                                    @can('delete', $comment)
+                                        <form method="POST" action="{{ route('comments.destroy', $comment) }}" data-confirm="Hapus komentar ini?">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="text-gray-300 hover:text-red-500 transition p-1 rounded-md hover:bg-red-50" title="Hapus komentar">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                                </svg>
+                                            </button>
+                                        </form>
+                                    @endcan
+                                </div>
+                                <p class="text-sm text-gray-650 mt-1 leading-relaxed whitespace-pre-line">{{ $comment->content }}</p>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            @else
+                <div class="text-center py-6">
+                    <p class="text-gray-400 text-sm">Belum ada diskusi. Jadilah yang pertama berkomentar!</p>
+                </div>
+            @endif
+
+            {{-- Post Comment Form --}}
+            <div class="pt-4 border-t border-gray-100">
+                <form method="POST" action="{{ route('comments.store', $aspiration) }}" class="space-y-3">
+                    @csrf
+                    <div>
+                        <label for="comment-content" class="sr-only">Tulis komentar</label>
+                        <textarea
+                            id="comment-content"
+                            name="content"
+                            rows="3"
+                            class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-green-400 focus:border-green-400 text-sm transition resize-none bg-gray-50 focus:bg-white"
+                            placeholder="Tulis komentar/masukan untuk aspirasi ini..."
+                            required
+                        >{{ old('content') }}</textarea>
+                        @error('content')
+                            <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
+                        @enderror
+                    </div>
+                    <div class="flex justify-end">
+                        <button type="submit" class="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-5 py-2.5 rounded-lg font-semibold shadow-sm hover:shadow-md transition text-sm">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                            </svg>
+                            Kirim Komentar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
 </div>
 
 {{-- Lightbox Modal --}}
