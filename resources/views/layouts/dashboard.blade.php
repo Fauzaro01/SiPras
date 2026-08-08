@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'SiPras - Sistem Prasarana Sekolah')</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     @stack('styles')
@@ -199,9 +200,8 @@
                         </svg>
                     </button>
 
-                    <span class="hidden sm:inline-block text-sm text-gray-500">
-                        {{ Auth::user()->name }}
-                    </span>
+                    <span class="hidden sm:inline-block text-sm text-gray-500">{{ Auth::user()->name }}</span>
+                    @include('partials.notification-bell')
                     <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold text-xs">
                         {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
                     </div>

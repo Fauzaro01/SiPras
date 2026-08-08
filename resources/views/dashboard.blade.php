@@ -17,6 +17,11 @@
             @endif
         </p>
     </div>
+    <!-- Export Buttons -->
+    <div class="flex space-x-3 mt-4">
+        <a href="{{ route('aspirations.export') }}" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">Export CSV</a>
+        <a href="{{ route('aspirations.export.pdf') }}" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition">Export PDF</a>
+    </div>
 
     {{-- ── Statistics Cards ────────────────────────────────────────────── --}}
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
