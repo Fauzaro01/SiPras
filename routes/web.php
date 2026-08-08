@@ -7,6 +7,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\NotificationController;
 
 // Landing Page
 Route::get('/', function () {
@@ -64,8 +65,15 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
             // Export Route (F-03)
             Route::get('/export/aspirations', [\App\Http\Controllers\ExportController::class, 'exportCsv'])
                 ->name('aspirations.export');
+            Route::get('/export/aspirations/pdf', [\App\Http\Controllers\ExportController::class, 'exportPdf'])
+                ->name('aspirations.export.pdf');
 
-            // Feedback Destroy Routes
+            // Notification routes
+Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
+Route::post('/notifications/{id}/read', [NotificationController::class, 'markAsRead'])->name('notifications.read');
+Route::post('/notifications/read-all', [NotificationController::class, 'markAllAsRead'])->name('notifications.readAll');
+
+// Feedback Destroy Routes
             Route::delete('/aspirations/{aspiration}/feedbacks/{feedback}', [FeedbackController::class, 'destroy'])
                 ->name('feedbacks.destroy');
 

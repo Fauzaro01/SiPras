@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Aspiration;
 use Illuminate\Http\Request;
+use PDF;
 
 class ExportController extends Controller
 {

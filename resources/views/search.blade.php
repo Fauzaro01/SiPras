@@ -55,7 +55,7 @@
                     @foreach($categories as $category)
                         <div class="border border-gray-100 rounded-xl p-4">
                             <h3 class="font-bold text-gray-800 text-sm">📁 {{ $category->nama }}</h3>
-                            <p class="text-xs text-gray-500 mt-1 leading-relaxed">{{ $category->deskripsi ?? 'Tidak ada deskripsi.' }}</p>
+                            <p class="text-gray-400 text-sm mt-1 leading-relaxed">{{ $category->deskripsi ?? 'Tidak ada deskripsi.' }}</p>
                         </div>
                     @endforeach
                 </div>
