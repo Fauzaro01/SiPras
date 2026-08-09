@@ -36,8 +36,13 @@ class DashboardController extends Controller
             ];
 
             // ── Tren bulanan 6 bulan terakhir (untuk line/bar chart) ──────────
+            $driver = \Illuminate\Support\Facades\DB::connection()->getDriverName();
+            $monthExpr = $driver === 'sqlite'
+                ? "strftime('%Y-%m', created_at)"
+                : "DATE_FORMAT(created_at, '%Y-%m')";
+
             $rawMonthly = (clone $baseQuery)
-                ->selectRaw("DATE_FORMAT(created_at, '%Y-%m') as month, COUNT(*) as count")
+                ->selectRaw("{$monthExpr} as month, COUNT(*) as count")
                 ->where('created_at', '>=', now()->subMonths(5)->startOfMonth())
                 ->groupBy('month')
                 ->orderBy('month')

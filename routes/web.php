@@ -60,6 +60,11 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
         Route::get('/profile/change-password', [AuthController::class, 'changePasswordForm'])->name('password.change');
         Route::post('/profile/change-password', [AuthController::class, 'updatePassword'])->name('password.update');
 
+        // Notification routes
+        Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
+        Route::post('/notifications/{id}/read', [NotificationController::class, 'markAsRead'])->name('notifications.read');
+        Route::post('/notifications/read-all', [NotificationController::class, 'markAllAsRead'])->name('notifications.readAll');
+
         // Admin-only Routes
         Route::middleware('admin')->group(function () {
             // Export Route (F-03)
@@ -68,12 +73,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
             Route::get('/export/aspirations/pdf', [\App\Http\Controllers\ExportController::class, 'exportPdf'])
                 ->name('aspirations.export.pdf');
 
-            // Notification routes
-Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
-Route::post('/notifications/{id}/read', [NotificationController::class, 'markAsRead'])->name('notifications.read');
-Route::post('/notifications/read-all', [NotificationController::class, 'markAllAsRead'])->name('notifications.readAll');
-
-// Feedback Destroy Routes
+            // Feedback Destroy Routes
             Route::delete('/aspirations/{aspiration}/feedbacks/{feedback}', [FeedbackController::class, 'destroy'])
                 ->name('feedbacks.destroy');
 

@@ -19,6 +19,8 @@ class AspirationObserver
             'action' => 'created',
             'changes' => $aspiration->only(['judul', 'lokasi', 'priority', 'status']),
         ]);
+
+        event(new \App\Events\AspirationCreated($aspiration));
     }
 
     public function updated(Aspiration $aspiration)
@@ -43,6 +45,14 @@ class AspirationObserver
                 'action' => 'updated',
                 'changes' => $changes,
             ]);
+
+            if (isset($changes['status'])) {
+                event(new \App\Events\AspirationStatusUpdated(
+                    $aspiration,
+                    $changes['status']['old'],
+                    $changes['status']['new']
+                ));
+            }
         }
     }
 
