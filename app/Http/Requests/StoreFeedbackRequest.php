@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Feedback;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreFeedbackRequest extends FormRequest
@@ -12,6 +13,7 @@ class StoreFeedbackRequest extends FormRequest
     public function authorize(): bool
     {
         $aspiration = $this->route('aspiration');
+
         return $aspiration && (auth()->user()->isAdmin() || $aspiration->user_id === auth()->id());
     }
 
@@ -28,14 +30,14 @@ class StoreFeedbackRequest extends FormRequest
                 function ($attribute, $value, $fail) {
                     $aspiration = $this->route('aspiration');
                     if ($aspiration) {
-                        $parentExists = \App\Models\Feedback::where('id', $value)
+                        $parentExists = Feedback::where('id', $value)
                             ->where('aspiration_id', $aspiration->id)
                             ->exists();
-                        if (!$parentExists) {
+                        if (! $parentExists) {
                             $fail('Feedback parent tidak valid.');
                         }
                     }
-                }
+                },
             ],
         ];
     }

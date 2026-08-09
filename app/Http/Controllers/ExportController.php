@@ -29,28 +29,28 @@ class ExportController extends Controller
         }
 
         if ($request->filled('start_date') && $request->filled('end_date')) {
-            $query->whereBetween('created_at', [$request->start_date . ' 00:00:00', $request->end_date . ' 23:59:59']);
+            $query->whereBetween('created_at', [$request->start_date.' 00:00:00', $request->end_date.' 23:59:59']);
         }
 
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
                 $q->where('judul', 'like', "%{$search}%")
-                  ->orWhere('deskripsi', 'like', "%{$search}%")
-                  ->orWhere('lokasi', 'like', "%{$search}%");
+                    ->orWhere('deskripsi', 'like', "%{$search}%")
+                    ->orWhere('lokasi', 'like', "%{$search}%");
             });
         }
 
         $aspirations = $query->latest()->get();
 
-        $filename = "aspirasi_export_" . date('Ymd_His') . ".csv";
+        $filename = 'aspirasi_export_'.date('Ymd_His').'.csv';
 
         $headers = [
-            "Content-type"        => "text/csv; charset=UTF-8",
-            "Content-Disposition" => "attachment; filename=$filename",
-            "Pragma"              => "no-cache",
-            "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
-            "Expires"             => "0",
+            'Content-type' => 'text/csv; charset=UTF-8',
+            'Content-Disposition' => "attachment; filename=$filename",
+            'Pragma' => 'no-cache',
+            'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
+            'Expires' => '0',
         ];
 
         $columns = ['ID', 'Judul', 'Deskripsi', 'Lokasi', 'Kategori', 'Pelapor (NIS)', 'Status', 'Prioritas', 'Tanggal Pengajuan'];
@@ -70,7 +70,7 @@ class ExportController extends Controller
                     $aspiration->deskripsi,
                     $aspiration->lokasi,
                     $aspiration->category->nama ?? '-',
-                    ($aspiration->user->name ?? '-') . ' (' . ($aspiration->user->nis ?? '-') . ')',
+                    ($aspiration->user->name ?? '-').' ('.($aspiration->user->nis ?? '-').')',
                     $aspiration->status_label,
                     str_replace(['🟢 ', '🟡 ', '🟠 ', '🔴 '], '', $aspiration->priority_label),
                     $aspiration->created_at->format('Y-m-d H:i:s'),
@@ -104,23 +104,23 @@ class ExportController extends Controller
         }
 
         if ($request->filled('start_date') && $request->filled('end_date')) {
-            $query->whereBetween('created_at', [$request->start_date . ' 00:00:00', $request->end_date . ' 23:59:59']);
+            $query->whereBetween('created_at', [$request->start_date.' 00:00:00', $request->end_date.' 23:59:59']);
         }
 
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
                 $q->where('judul', 'like', "%{$search}%")
-                  ->orWhere('deskripsi', 'like', "%{$search}%")
-                  ->orWhere('lokasi', 'like', "%{$search}%");
+                    ->orWhere('deskripsi', 'like', "%{$search}%")
+                    ->orWhere('lokasi', 'like', "%{$search}%");
             });
         }
 
         $aspirations = $query->latest()->get();
-        $filename    = "aspirasi_export_" . date('Ymd_His') . ".pdf";
+        $filename = 'aspirasi_export_'.date('Ymd_His').'.pdf';
 
         $pdf = Pdf::loadView('exports.aspiration_pdf', compact('aspirations'))
-                  ->setPaper('a4', 'landscape');
+            ->setPaper('a4', 'landscape');
 
         return $pdf->download($filename);
     }

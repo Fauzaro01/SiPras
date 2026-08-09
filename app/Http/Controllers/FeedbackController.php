@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreFeedbackRequest;
 use App\Models\Aspiration;
 use App\Models\Feedback;
-use Illuminate\Http\Request;
-use App\Http\Requests\StoreFeedbackRequest;
 
 class FeedbackController extends Controller
 {
@@ -14,7 +13,7 @@ class FeedbackController extends Controller
      */
     public function store(StoreFeedbackRequest $request, Aspiration $aspiration)
     {
-        if (!auth()->user()->isAdmin()) {
+        if (! auth()->user()->isAdmin()) {
             abort(403);
         }
         $validated = $request->validated();

@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rules\Password;
 
 class UpdateUserRequest extends FormRequest
 {
@@ -30,7 +31,7 @@ class UpdateUserRequest extends FormRequest
         }
 
         if ($this->filled('password')) {
-            $rules['password'] = ['string', 'confirmed', \Illuminate\Validation\Rules\Password::min(8)->mixedCase()->numbers()];
+            $rules['password'] = ['string', 'confirmed', Password::min(8)->mixedCase()->numbers()];
         }
 
         return $rules;

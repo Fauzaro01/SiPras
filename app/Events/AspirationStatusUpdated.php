@@ -12,7 +12,9 @@ class AspirationStatusUpdated
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public $aspiration;
+
     public $oldStatus;
+
     public $newStatus;
 
     public function __construct(Aspiration $aspiration, $oldStatus, $newStatus)

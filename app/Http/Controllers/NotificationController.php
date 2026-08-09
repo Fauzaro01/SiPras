@@ -17,6 +17,7 @@ class NotificationController extends Controller
             ->orderByDesc('created_at')
             ->limit(20)
             ->get();
+
         return response()->json($notifications);
     }
 
@@ -31,6 +32,7 @@ class NotificationController extends Controller
             abort(403);
         }
         $notification->update(['read_at' => now()]);
+
         return response()->json(['status' => 'ok']);
     }
 
@@ -40,6 +42,7 @@ class NotificationController extends Controller
     public function markAllAsRead(Request $request)
     {
         $request->user()->notifications()->update(['read_at' => now()]);
+
         return response()->json(['status' => 'ok']);
     }
 }

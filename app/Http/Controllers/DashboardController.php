@@ -4,15 +4,17 @@ namespace App\Http\Controllers;
 
 use App\Models\Aspiration;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
     public function index()
     {
         $user = Auth::user();
-        $cacheKey = "dashboard_data_user_" . $user->id;
+        $cacheKey = 'dashboard_data_user_'.$user->id;
 
-        $data = \Illuminate\Support\Facades\Cache::remember($cacheKey, 300, function() use ($user) {
+        $data = Cache::remember($cacheKey, 300, function () use ($user) {
             // ── Scope query berdasarkan role ──────────────────────────────────
             $baseQuery = $user->isAdmin()
                 ? Aspiration::query()
@@ -29,14 +31,14 @@ class DashboardController extends Controller
 
             $stats = [
                 'total_aspirasi' => (int) ($counts->total_aspirasi ?? 0),
-                'diajukan'       => (int) ($counts->diajukan ?? 0),
-                'diproses'       => (int) ($counts->diproses ?? 0),
-                'selesai'        => (int) ($counts->selesai ?? 0),
-                'ditolak'        => (int) ($counts->ditolak ?? 0),
+                'diajukan' => (int) ($counts->diajukan ?? 0),
+                'diproses' => (int) ($counts->diproses ?? 0),
+                'selesai' => (int) ($counts->selesai ?? 0),
+                'ditolak' => (int) ($counts->ditolak ?? 0),
             ];
 
             // ── Tren bulanan 6 bulan terakhir (untuk line/bar chart) ──────────
-            $driver = \Illuminate\Support\Facades\DB::connection()->getDriverName();
+            $driver = DB::connection()->getDriverName();
             $monthExpr = $driver === 'sqlite'
                 ? "strftime('%Y-%m', created_at)"
                 : "DATE_FORMAT(created_at, '%Y-%m')";
@@ -52,7 +54,7 @@ class DashboardController extends Controller
             $chartMonths = [];
             $chartCounts = [];
             for ($i = 5; $i >= 0; $i--) {
-                $key   = now()->subMonths($i)->format('Y-m');
+                $key = now()->subMonths($i)->format('Y-m');
                 $label = now()->subMonths($i)->translatedFormat('M Y');
                 $chartMonths[] = $label;
                 $chartCounts[] = $rawMonthly[$key] ?? 0;
@@ -65,8 +67,8 @@ class DashboardController extends Controller
                 ->with('category')
                 ->get();
 
-            $chartCategories      = $categoryRows->map(fn ($r) => $r->category->nama ?? 'Umum')->toArray();
-            $chartCategoryCounts  = $categoryRows->pluck('count')->toArray();
+            $chartCategories = $categoryRows->map(fn ($r) => $r->category->nama ?? 'Umum')->toArray();
+            $chartCategoryCounts = $categoryRows->pluck('count')->toArray();
 
             // ── Aspirasi terbaru ──────────────────────────────────────────────
             $recent_aspirations = $user->isAdmin()

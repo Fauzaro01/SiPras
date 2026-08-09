@@ -2,11 +2,11 @@
 
 namespace App\Providers;
 
-use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use App\Events\AspirationCreated;
 use App\Events\AspirationStatusUpdated;
 use App\Listeners\NotifyAdminsNewAspiration;
 use App\Listeners\NotifyUserStatusChange;
+use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
 class EventServiceProvider extends ServiceProvider
 {
