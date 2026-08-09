@@ -2,6 +2,12 @@
 
 namespace App\Providers;
 
+use App\Models\Aspiration;
+use App\Models\Comment;
+use App\Models\User;
+use App\Observers\AspirationObserver;
+use App\Observers\CommentObserver;
+use App\Observers\UserObserver;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -24,20 +30,20 @@ class AppServiceProvider extends ServiceProvider
                 $user = auth()->user();
                 $badges = [];
                 if ($user->isAdmin()) {
-                    $badges['pending_aspirations'] = \App\Models\Aspiration::where('status', 'diajukan')->count();
+                    $badges['pending_aspirations'] = Aspiration::where('status', 'diajukan')->count();
                 } else {
-                    $badges['active_aspirations'] = \App\Models\Aspiration::where('user_id', $user->id)
+                    $badges['active_aspirations'] = Aspiration::where('user_id', $user->id)
                         ->whereIn('status', ['diajukan', 'diproses'])
                         ->count();
-                    $badges['history_aspirations'] = \App\Models\Aspiration::where('user_id', $user->id)
+                    $badges['history_aspirations'] = Aspiration::where('user_id', $user->id)
                         ->whereIn('status', ['selesai', 'ditolak'])
                         ->count();
                 }
                 $view->with('sidebarBadges', $badges);
             }
         });
-        \App\Models\Aspiration::observe(\App\Observers\AspirationObserver::class);
-        \App\Models\Comment::observe(\App\Observers\CommentObserver::class);
-        \App\Models\User::observe(\App\Observers\UserObserver::class);
+        Aspiration::observe(AspirationObserver::class);
+        Comment::observe(CommentObserver::class);
+        User::observe(UserObserver::class);
     }
 }

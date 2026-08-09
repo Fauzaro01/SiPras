@@ -11,8 +11,8 @@ return new class extends Migration
         Schema::table('aspirations', function (Blueprint $table) {
             // F-08: Label prioritas aspirasi
             $table->enum('priority', ['rendah', 'sedang', 'tinggi', 'mendesak'])
-                  ->default('sedang')
-                  ->after('status');
+                ->default('sedang')
+                ->after('status');
         });
     }
 
@@ -23,4 +23,3 @@ return new class extends Migration
         });
     }
 };
-

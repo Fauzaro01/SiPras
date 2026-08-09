@@ -23,7 +23,7 @@ class UpdateCategoryRequest extends FormRequest
         $id = $category ? $category->id : null;
 
         return [
-            'nama' => 'required|string|max:255|unique:categories,nama,' . $id,
+            'nama' => 'required|string|max:255|unique:categories,nama,'.$id,
             'deskripsi' => 'nullable|string|max:255',
         ];
     }

@@ -2,8 +2,8 @@
 
 namespace App\Observers;
 
-use App\Models\User;
 use App\Models\ActivityLog;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
 class UserObserver
@@ -26,12 +26,12 @@ class UserObserver
             if ($key !== 'updated_at' && $key !== 'password') {
                 $changes[$key] = [
                     'old' => $user->getOriginal($key),
-                    'new' => $value
+                    'new' => $value,
                 ];
             }
         }
 
-        if (!empty($changes)) {
+        if (! empty($changes)) {
             ActivityLog::create([
                 'user_id' => Auth::id() ?? $user->id,
                 'loggable_type' => User::class,

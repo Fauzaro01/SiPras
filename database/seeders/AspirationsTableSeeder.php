@@ -2,10 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\Aspiration;
-use App\Models\User;
-use App\Models\Category;
+use Illuminate\Database\Seeder;
 
 class AspirationsTableSeeder extends Seeder
 {

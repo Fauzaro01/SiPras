@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Aspiration;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreAspirationRequest extends FormRequest
@@ -16,7 +17,7 @@ class StoreAspirationRequest extends FormRequest
             return false;
         }
 
-        $activeCount = \App\Models\Aspiration::where('user_id', $this->user()->id)
+        $activeCount = Aspiration::where('user_id', $this->user()->id)
             ->whereIn('status', ['diajukan', 'diproses'])
             ->count();
 
@@ -33,12 +34,12 @@ class StoreAspirationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'judul'       => 'required|string|max:255',
-            'deskripsi'   => 'required|string',
+            'judul' => 'required|string|max:255',
+            'deskripsi' => 'required|string',
             'category_id' => 'required|exists:categories,id',
-            'lokasi'      => 'required|string|max:255',
-            'bukti_foto'  => 'required|image|mimes:jpg,jpeg,png,webp|max:5120',
-            'priority'    => 'nullable|in:rendah,sedang,tinggi,mendesak', // F-08
+            'lokasi' => 'required|string|max:255',
+            'bukti_foto' => 'required|image|mimes:jpg,jpeg,png,webp|max:5120',
+            'priority' => 'nullable|in:rendah,sedang,tinggi,mendesak', // F-08
         ];
     }
 }

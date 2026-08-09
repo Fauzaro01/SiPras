@@ -74,9 +74,9 @@ class Aspiration extends Model
         return match ($this->status) {
             'diajukan' => 'Diajukan',
             'diproses' => 'Diproses',
-            'selesai'  => 'Selesai',
-            'ditolak'  => 'Ditolak',
-            default    => ucfirst($this->status),
+            'selesai' => 'Selesai',
+            'ditolak' => 'Ditolak',
+            default => ucfirst($this->status),
         };
     }
 
@@ -88,11 +88,11 @@ class Aspiration extends Model
     public function getPriorityColorAttribute(): string
     {
         return match ($this->priority) {
-            'rendah'   => 'priority-rendah',
-            'sedang'   => 'priority-sedang',
-            'tinggi'   => 'priority-tinggi',
+            'rendah' => 'priority-rendah',
+            'sedang' => 'priority-sedang',
+            'tinggi' => 'priority-tinggi',
             'mendesak' => 'priority-mendesak',
-            default    => 'priority-sedang',
+            default => 'priority-sedang',
         };
     }
 
@@ -102,11 +102,11 @@ class Aspiration extends Model
     public function getPriorityLabelAttribute(): string
     {
         return match ($this->priority) {
-            'rendah'   => '🟢 Rendah',
-            'sedang'   => '🟡 Sedang',
-            'tinggi'   => '🟠 Tinggi',
+            'rendah' => '🟢 Rendah',
+            'sedang' => '🟡 Sedang',
+            'tinggi' => '🟠 Tinggi',
             'mendesak' => '🔴 Mendesak',
-            default    => '🟡 Sedang',
+            default => '🟡 Sedang',
         };
     }
 }

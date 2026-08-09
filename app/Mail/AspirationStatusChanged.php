@@ -27,6 +27,6 @@ class AspirationStatusChanged extends Mailable
     public function build()
     {
         return $this->subject('Status Aspirasi Anda Telah Diupdate')
-                    ->view('emails.aspiration_status');
+            ->view('emails.aspiration_status');
     }
 }

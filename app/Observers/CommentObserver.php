@@ -2,9 +2,10 @@
 
 namespace App\Observers;
 
-use App\Models\Comment;
 use App\Models\ActivityLog;
+use App\Models\Comment;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class CommentObserver
 {
@@ -17,7 +18,7 @@ class CommentObserver
             'action' => 'created',
             'changes' => [
                 'aspiration_id' => $comment->aspiration_id,
-                'content_preview' => \Illuminate\Support\Str::limit($comment->content, 50),
+                'content_preview' => Str::limit($comment->content, 50),
             ],
         ]);
     }
@@ -31,7 +32,7 @@ class CommentObserver
             'action' => 'deleted',
             'changes' => [
                 'aspiration_id' => $comment->aspiration_id,
-                'content_preview' => \Illuminate\Support\Str::limit($comment->content, 50),
+                'content_preview' => Str::limit($comment->content, 50),
             ],
         ]);
     }

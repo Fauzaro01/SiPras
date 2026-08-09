@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Aspiration;
 use App\Models\Comment;
-use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Http\Request;
 
 class CommentController extends Controller
 {

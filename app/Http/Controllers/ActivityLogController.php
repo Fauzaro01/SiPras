@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\ActivityLog;
+use App\Models\Aspiration;
+use App\Models\Comment;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class ActivityLogController extends Controller
@@ -22,9 +25,9 @@ class ActivityLogController extends Controller
         // Filter berdasarkan tipe model
         if ($request->filled('type')) {
             $modelClass = match ($request->type) {
-                'aspiration' => \App\Models\Aspiration::class,
-                'comment' => \App\Models\Comment::class,
-                'user' => \App\Models\User::class,
+                'aspiration' => Aspiration::class,
+                'comment' => Comment::class,
+                'user' => User::class,
                 default => null,
             };
 
@@ -38,7 +41,7 @@ class ActivityLogController extends Controller
             $search = $request->search;
             $query->whereHas('user', function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('username', 'like', "%{$search}%");
+                    ->orWhere('username', 'like', "%{$search}%");
             });
         }
 

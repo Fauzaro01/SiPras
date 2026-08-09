@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class UserController extends Controller
 {
@@ -52,6 +53,7 @@ class UserController extends Controller
     public function editProfile()
     {
         $user = auth()->user();
+
         return view('profile.edit', compact('user'));
     }
 
@@ -64,11 +66,11 @@ class UserController extends Controller
         // Handle avatar upload if present
         if ($request->hasFile('avatar')) {
             // Delete old avatar if it exists
-            if (!empty($user->avatar)) {
-                \Illuminate\Support\Facades\Storage::disk('public')->delete($user->avatar);
+            if (! empty($user->avatar)) {
+                Storage::disk('public')->delete($user->avatar);
             }
             $file = $request->file('avatar');
-            $filename = \Illuminate\Support\Str::uuid() . '.' . $file->getClientOriginalExtension();
+            $filename = Str::uuid().'.'.$file->getClientOriginalExtension();
             $path = $file->storeAs('avatars', $filename, 'public');
             $validated['avatar'] = $path;
         }
@@ -123,7 +125,7 @@ class UserController extends Controller
             ->toArray();
 
         $photosToDelete = array_filter($photos, function ($photo) {
-            return \Illuminate\Support\Facades\Storage::disk('public')->exists($photo);
+            return Storage::disk('public')->exists($photo);
         });
 
         if (! empty($photosToDelete)) {

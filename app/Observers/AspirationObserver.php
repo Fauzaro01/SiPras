@@ -2,15 +2,18 @@
 
 namespace App\Observers;
 
-use App\Models\Aspiration;
+use App\Events\AspirationCreated;
+use App\Events\AspirationStatusUpdated;
 use App\Models\ActivityLog;
+use App\Models\Aspiration;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 
 class AspirationObserver
 {
     public function created(Aspiration $aspiration)
     {
-        \Illuminate\Support\Facades\Cache::flush();
+        Cache::flush();
 
         ActivityLog::create([
             'user_id' => Auth::id() ?? $aspiration->user_id,
@@ -20,24 +23,24 @@ class AspirationObserver
             'changes' => $aspiration->only(['judul', 'lokasi', 'priority', 'status']),
         ]);
 
-        event(new \App\Events\AspirationCreated($aspiration));
+        event(new AspirationCreated($aspiration));
     }
 
     public function updated(Aspiration $aspiration)
     {
-        \Illuminate\Support\Facades\Cache::flush();
+        Cache::flush();
 
         $changes = [];
         foreach ($aspiration->getDirty() as $key => $value) {
             if ($key !== 'updated_at') {
                 $changes[$key] = [
                     'old' => $aspiration->getOriginal($key),
-                    'new' => $value
+                    'new' => $value,
                 ];
             }
         }
 
-        if (!empty($changes)) {
+        if (! empty($changes)) {
             ActivityLog::create([
                 'user_id' => Auth::id() ?? $aspiration->user_id,
                 'loggable_type' => Aspiration::class,
@@ -47,7 +50,7 @@ class AspirationObserver
             ]);
 
             if (isset($changes['status'])) {
-                event(new \App\Events\AspirationStatusUpdated(
+                event(new AspirationStatusUpdated(
                     $aspiration,
                     $changes['status']['old'],
                     $changes['status']['new']
@@ -58,7 +61,7 @@ class AspirationObserver
 
     public function deleted(Aspiration $aspiration)
     {
-        \Illuminate\Support\Facades\Cache::flush();
+        Cache::flush();
 
         ActivityLog::create([
             'user_id' => Auth::id() ?? $aspiration->user_id,
