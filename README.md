@@ -1,7 +1,7 @@
 # SiPras - Sistem Prasarana Sekolah
 
 <div align="center">
-
+ 
 [![Laravel](https://img.shields.io/badge/Laravel-12-FF2D20?style=flat-square&logo=laravel)](https://laravel.com)
 [![PHP](https://img.shields.io/badge/PHP-%3E%3D%208.2-777BB4?style=flat-square&logo=php)](https://www.php.net/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-4-06B6D4?style=flat-square&logo=tailwind-css)](https://tailwindcss.com)
