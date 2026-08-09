@@ -237,6 +237,21 @@ test('B.4 status tidak valid akan divalidasi dan ditolak', function () {
     $response->assertSessionHasErrors('status');
 });
 
+test('B.4 mengubah status aspirasi membuat notifikasi untuk siswa pemilik aspirasi', function () {
+    $admin = User::factory()->admin()->create();
+    $siswa = User::factory()->siswa()->create();
+    $aspiration = Aspiration::factory()->diajukan()->create(['user_id' => $siswa->id, 'judul' => 'Kerusakan Genteng']);
+
+    $this->actingAs($admin)->post(route('aspirations.update-status', $aspiration), [
+        'status' => 'diproses',
+    ]);
+
+    $this->assertDatabaseHas('notifications', [
+        'user_id' => $siswa->id,
+        'type' => 'status_change',
+    ]);
+});
+
 // ----------------------------------------------------------
 // B.5 Admin Dapat Melihat Histori Aspirasi
 // ----------------------------------------------------------
